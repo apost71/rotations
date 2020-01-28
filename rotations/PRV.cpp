@@ -74,16 +74,11 @@ RotationParameters* PRV::fromDCM(Matrix dcm) {
     double c_phi = 0.5 * (dcm.get(0,0) + dcm.get(1, 1) + dcm.get(2, 2) - 1);
     double phi = acos(c_phi);
     double c = 1 / (2*sin(phi));
-
-    std::cout << "Test: " << c_phi << std::endl;
     
     Matrix* e_hat = new Matrix(3, 1);
     e_hat->insert(0, 0, c * (dcm.get(1, 2) - dcm.get(2, 1)));
     e_hat->insert(1, 0, c * (dcm.get(2, 0) - dcm.get(0, 2)));
     e_hat->insert(2, 0, c * (dcm.get(0, 1) - dcm.get(1, 0)));
-    
-    std::cout << "From DCM: " << std::endl;
-    e_hat->print();
     
     return new PRV(phi, e_hat);
 }
