@@ -7,37 +7,37 @@
 //
 
 #include <iostream>
-#include "DCM.hpp"
+#include "RotationParameters.hpp"
 #include "Matrix.hpp"
 
 
-DCM::DCM(const DCM &o){
+RotationParameters::RotationParameters(const RotationParameters &o){
     if (o.m_dcm) {
         this->m_dcm = o.m_dcm;
     }
 }
 
-DCM::~DCM(){
+RotationParameters::~RotationParameters(){
     if (this->m_dcm) {
         delete this->m_dcm;
     }
 }
 
-Matrix DCM::addDCM(DCM &o) {
+Matrix* RotationParameters::addDCM(RotationParameters &o) {
     if (! m_dcm) {
         this->m_dcm = toDCM();
     }
     return m_dcm->multiply(*o.m_dcm);
 }
 
-Matrix DCM::subtractDCM(DCM &o) {
+Matrix* RotationParameters::subtractDCM(RotationParameters &o) {
     if (! m_dcm) {
         this->m_dcm = toDCM();
     }
     return m_dcm->multiply(*o.m_dcm->transpose());
 }
 
-Matrix* DCM::toDCM() {
+Matrix* RotationParameters::toDCM() {
     return m_dcm;
 }
 
@@ -58,3 +58,10 @@ std::ostream& operator<<(std::ostream& os, Matrix& m)
     return os;
 }
 
+double degreeToRadians(double d) {
+    return (2*M_PI) * (d / 360);
+}
+
+double radianToDegrees(double r) {
+    return r * (180/M_PI);
+}
