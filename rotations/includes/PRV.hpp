@@ -23,13 +23,13 @@ public:
     PRV(const PRV &o);
     ~PRV();
     
-    RotationParameters* add(RotationParameters &o);
+    std::unique_ptr<RotationParameters> add(RotationParameters &o);
+
+    std::unique_ptr<RotationParameters> subtract(RotationParameters &o);
     
-    RotationParameters* subtract(RotationParameters &o);
-    
-    Matrix* toDCM();
-    
-    RotationParameters* fromDCM(Matrix dcm);
+    Matrix toDCM();
+
+    std::unique_ptr<RotationParameters> fromDCM(Matrix &dcm);
     
     void printRadians();
     

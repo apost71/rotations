@@ -24,26 +24,42 @@ Matrix::Matrix(int rows, int cols): m_rows(rows), m_cols(cols){
 Matrix::Matrix(const Matrix &o) {
     this->m_rows = o.m_rows;
     this->m_cols = o.m_cols;
-    this->m_data = o.m_data;
+    this->m_data = new double*[m_rows];
+    for (int i = 0; i < m_rows; i ++) {
+        m_data[i] = new double[m_cols];
+        for (int j = 0; j < m_cols; j ++) {
+            m_data[i][j] = o.m_data[i][j];
+        }
+    }
 }
 
-Matrix::~Matrix() {}
+Matrix::~Matrix() {
+    std::cout << "Destructor Called" << std::endl;
+    if (m_data) {
+        for (int i = 0; i < m_rows; i++) {
+            delete[] m_data[i];
+        }
+        delete[] m_data;
+    } else {
+        std::cout << "Data not initialized" << std::endl;
+    }
+}
 
-Matrix* Matrix::multiply(Matrix &o) {
+Matrix Matrix::multiply(Matrix o) {
     Matrix* result = new Matrix(m_rows, o.m_cols);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < o.m_cols; j ++) {
-            double* sum = new double(0);
+            auto sum = new double(0);
             for (int k = 0; k < m_cols; k ++) {
                 *sum += this->m_data[i][k] * o.m_data[k][j];
             }
             result->insert(i, j, *sum);
         }
     }
-    return result;
+    return *result;
 }
 
-Matrix* Matrix::transpose() {
+Matrix Matrix::transpose() {
     for (int i = 0; i < m_rows; i ++ ) {
         for (int j = i + 1; j < m_cols; j ++) {
             // potential for a memory leak here I think
@@ -52,17 +68,13 @@ Matrix* Matrix::transpose() {
             m_data[j][i] = cur;
         }
     }
-    return this;
+    return *this;
 }
 
 void Matrix::insert(int row, int column, double value) {
     m_data[row][column] = value;
 }
 
-
-double* &Matrix::operator[](int i) {
-    return m_data[i];
-}
 
 int Matrix::getRows() const {
     return m_rows;
@@ -83,4 +95,27 @@ void Matrix::print() {
 
 double Matrix::get(int row, int col) {
     return m_data[row][col];
+}
+
+double& Matrix::operator()(int row, int col){
+    assert(col >= 0 && col < m_cols);
+    assert(row >= 0 && row < m_rows);
+
+    return m_data[row][col];
+}
+
+std::ostream& operator<<(std::ostream& os, Matrix &m){
+    os << "[" << std::endl;
+    for (int i = 0; i < m.getRows(); i ++) {
+        os << "  [";
+        for (int j = 0; j < m.getColumns(); j ++) {
+            os << m(i, j);
+            if (j < m.getColumns() - 1) {
+                os << ", ";
+            }
+        }
+        os << "]" << std::endl;
+    }
+    os << "]";
+    return os;
 }

@@ -25,20 +25,24 @@ private:
     
 public:
     EulerAngle(int axis1, int axis2, int axis3, double t1, double t2, double t3);
+
+    EulerAngle(int axis1, int axis2, int axis3, std::string name);
+
+    EulerAngle(int axis1, int axis2, int axis3, double t1, double t2, double t3, std::string name);
     
     EulerAngle(int axis1, int axis2, int axis3);
     
     EulerAngle(const EulerAngle &o);
     
     ~EulerAngle();
+
+    std::unique_ptr<RotationParameters> add(RotationParameters &o);
+
+    std::unique_ptr<RotationParameters> subtract(RotationParameters &o);
     
-    RotationParameters* add(RotationParameters &o);
-    
-    RotationParameters* subtract(RotationParameters &o);
-    
-    Matrix* toDCM();
-    
-    RotationParameters* fromDCM(Matrix dcm);
+    Matrix toDCM();
+
+    std::unique_ptr<RotationParameters> fromDCM(Matrix &dcm);
         
     bool isSymmetric();
     
@@ -46,9 +50,11 @@ public:
     
     void printRadians();
     
-    Matrix* B(double t1, double t2, double t3);
+    Matrix B(double t1, double t2, double t3);
     
-    Matrix* integrate(std::function<Matrix*(double)> w, double duration, double step);
+    Matrix integrate(std::function<Matrix&(double)> w, double duration, double step);
+
+    friend std::ostream& operator<<(std::ostream &os, EulerAngle &e);
 };
 
 #endif /* EulerAngle_hpp */

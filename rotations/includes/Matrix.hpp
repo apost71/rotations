@@ -10,6 +10,7 @@
 #define Matrix_hpp
 
 #include <stdio.h>
+#include <iostream>
 
 class Matrix {
 private:
@@ -23,14 +24,14 @@ public:
     Matrix(const Matrix &o);
     ~Matrix();
     
-    Matrix* multiply(Matrix &o);
-    Matrix* transpose() ;
-    double* &operator[](int i);
+    Matrix multiply(Matrix o);
+    Matrix transpose() ;
     int getRows() const;
     int getColumns() const;
     void print();
     void insert(int row, int column, double value);
     double get(int row, int col);
+    double &operator()(int row, int col);
+    friend std::ostream& operator<<(std::ostream& os, Matrix &m);
 };
-
 #endif /* Matrix_hpp */

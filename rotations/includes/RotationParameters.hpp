@@ -18,7 +18,7 @@
 
 class RotationParameters {
 protected:
-    std::string name;
+    std::string m_name;
     Matrix* m_dcm = nullptr;
     const int rows = 3;
     const int cols = 3;
@@ -26,19 +26,19 @@ protected:
 public:
     RotationParameters(){};
     RotationParameters(const RotationParameters &o);
-    ~RotationParameters();
+    virtual ~RotationParameters();
     
-    Matrix* addDCM(RotationParameters &o);
+    Matrix addDCM(RotationParameters &o);
     
-    Matrix* subtractDCM(RotationParameters &o);
+    Matrix subtractDCM(RotationParameters &o);
     
-    virtual RotationParameters* add(RotationParameters &o) = 0;
+    virtual std::unique_ptr<RotationParameters> add(RotationParameters &o) = 0;
     
-    virtual RotationParameters* subtract(RotationParameters &o) = 0;
+    virtual std::unique_ptr<RotationParameters> subtract(RotationParameters &o) = 0;
     
-    virtual Matrix* toDCM() = 0;
+    virtual Matrix toDCM() = 0;
     
-    virtual RotationParameters* fromDCM(Matrix dcm) = 0;
+    virtual std::unique_ptr<RotationParameters> fromDCM(Matrix &dcm) = 0;
     
     virtual void printRadians() = 0;
     

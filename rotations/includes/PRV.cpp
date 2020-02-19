@@ -19,7 +19,7 @@ PRV::PRV(){}
 
 PRV::PRV(double phi, Matrix* Ev): m_phi(phi), m_Ev(Ev){
     m_phi = degreeToRadians(phi);
-    name = "PRV";
+    m_name = "PRV";
 }
 
 PRV::PRV(const PRV &o) {
@@ -31,22 +31,23 @@ PRV::~PRV() {
     delete m_Ev;
 }
 
-RotationParameters* PRV::add(RotationParameters &o){
+std::unique_ptr<RotationParameters> PRV::add(RotationParameters &o){
     if (! m_dcm) {
-        m_dcm = toDCM();
+        *m_dcm = toDCM();
     }
-    Matrix* dcm = m_dcm->multiply(*o.toDCM());
-    return fromDCM(*dcm);
+    Matrix dcm = m_dcm->multiply(o.toDCM());
+    return fromDCM(dcm);
 }
 
-RotationParameters* PRV::subtract(RotationParameters &o) {
+std::unique_ptr<RotationParameters> PRV::subtract(RotationParameters &o) {
     if (! m_dcm) {
-        m_dcm = toDCM();
+        *m_dcm = toDCM();
     }
-    Matrix* dcm = m_dcm->multiply(*o.toDCM()->transpose());
-    return fromDCM(*dcm);}
+    Matrix dcm = m_dcm->multiply(o.toDCM().transpose());
+    return fromDCM(dcm);
+}
 
-Matrix* PRV::toDCM() {
+Matrix PRV::toDCM() {
     if (! m_Ev) {
         throw "Must initialize Ev and Phi to convert to DCM";
     }
@@ -67,10 +68,10 @@ Matrix* PRV::toDCM() {
     } else {
         throw "Unimplemented Exception";
     }
-    return m_dcm;
+    return *m_dcm;
 }
 
-RotationParameters* PRV::fromDCM(Matrix dcm) {
+std::unique_ptr<RotationParameters> PRV::fromDCM(Matrix &dcm) {
     double c_phi = 0.5 * (dcm.get(0,0) + dcm.get(1, 1) + dcm.get(2, 2) - 1);
     double phi = acos(c_phi);
     double c = 1 / (2*sin(phi));
@@ -80,7 +81,7 @@ RotationParameters* PRV::fromDCM(Matrix dcm) {
     e_hat->insert(1, 0, c * (dcm.get(2, 0) - dcm.get(0, 2)));
     e_hat->insert(2, 0, c * (dcm.get(0, 1) - dcm.get(1, 0)));
     
-    return new PRV(phi, e_hat);
+    return std::make_unique<PRV>(PRV(phi, e_hat));
 }
 
 void PRV::printRadians() {
