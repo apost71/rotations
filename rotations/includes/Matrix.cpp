@@ -174,11 +174,32 @@ Matrix operator*(Matrix &m1, Matrix &m2) {
     return result;
 }
 
+double Matrix::trace() {
+    if (m_cols != m_rows) {
+        throw new std::string("Matrix must be square to compute trace");
+    }
+    double d = 0;
+    for (int i = 0; i < m_cols; i ++ ) {
+        d += m_data[i][i];
+    }
+    return d;
+}
+
 Matrix operator*(double d, Matrix &m) {
     Matrix result = Matrix(m.m_rows, m.m_cols);
     for (int i = 0; i < m.m_rows; i++) {
         for (int j = 0; j < m.m_cols; j++) {
             result(i, j) = d * m(i, j);
+        }
+    }
+    return result;
+}
+
+Matrix operator/(Matrix &m, double d) {
+    auto result = Matrix(m.m_rows, m.m_cols);
+    for (int i = 0; i < m.m_rows; i ++) {
+        for (int j = 0; j < m.m_cols; j ++) {
+            result(i, j) = d / m(i, j);
         }
     }
     return result;

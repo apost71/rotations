@@ -7,9 +7,8 @@
 //
 
 #include <iostream>
-#include <math.h>
-#include "includes/Matrix.hpp"
-#include "includes/EulerAngle.hpp"
+#include "Matrix.hpp"
+#include "EulerAngle.hpp"
 
 
 /*

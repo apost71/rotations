@@ -91,3 +91,11 @@ void PRV::printRadians() {
 void PRV::printDegrees() {
     std::cout << "Phi: " << radianToDegrees(m_phi) << "  E_v: [" << radianToDegrees((*m_Ev)(0, 0)) << ", " << radianToDegrees((*m_Ev)(1, 0)) << ", " << radianToDegrees((*m_Ev)(2, 0)) << "]";
 }
+
+double PRV::getPhi() {
+    return m_phi;
+}
+
+Matrix PRV::getEv() {
+    return *m_Ev;
+}

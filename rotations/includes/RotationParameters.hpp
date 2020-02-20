@@ -32,9 +32,9 @@ public:
     
     Matrix subtractDCM(RotationParameters &o);
     
-    virtual std::unique_ptr<RotationParameters> add(RotationParameters &o) = 0;
+    virtual std::unique_ptr<RotationParameters> add(RotationParameters &o);
     
-    virtual std::unique_ptr<RotationParameters> subtract(RotationParameters &o) = 0;
+    virtual std::unique_ptr<RotationParameters> subtract(RotationParameters &o);
     
     virtual Matrix toDCM() = 0;
     

@@ -34,6 +34,10 @@ public:
     void printRadians();
     
     void printDegrees();
+
+    double getPhi();
+
+    Matrix getEv();
     
 };
 

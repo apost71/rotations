@@ -12,12 +12,20 @@ project(rotations)
 
 include_directories(rotations/includes)
 
+find_package(Catch2 REQUIRED)
+
 set(SOURCES
-        "rotations/main.cpp"
         "rotations/includes/Matrix.cpp"
         "rotations/includes/EulerAngle.cpp"
         "rotations/includes/PRV.cpp"
         "rotations/includes/RotationParameters.cpp"
-        )
+        rotations/includes/Quaternion.hpp rotations/includes/Quaternion.cpp)
 
-add_executable(rotations ${SOURCES})
+add_executable(rotations ${SOURCES} rotations/src/main.cpp)
+
+add_executable(rotations_test ${SOURCES} rotations/test/test.cpp)
+target_link_libraries(rotations_test Catch2::Catch2)
+
+include(CTest)
+include(Catch)
+catch_discover_tests(rotations_test)

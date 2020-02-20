@@ -50,11 +50,7 @@ std::unique_ptr<RotationParameters> EulerAngle::add(RotationParameters &o) {
         // here we could put the math for adding symmetric Euler Angles
         return std::make_unique<EulerAngle>(*this);
     } else {
-        if (! m_dcm) {
-            *m_dcm = toDCM();
-        }
-        Matrix dcm = m_dcm->multiply(o.toDCM());
-        return fromDCM(dcm);
+        return RotationParameters::add(o);
     }
 }
 
@@ -63,11 +59,7 @@ std::unique_ptr<RotationParameters> EulerAngle::subtract(RotationParameters &o){
         // subtraction if euler angles are identical and symmetric
         return std::make_unique<EulerAngle>(*this);
     } else {
-        if (! m_dcm) {
-            *m_dcm = toDCM();
-        }
-        Matrix dcm = m_dcm->multiply(o.toDCM().transpose());
-        return fromDCM(dcm);
+        return RotationParameters::subtract(o);
     }
 }
 
@@ -166,8 +158,7 @@ Matrix EulerAngle::integrate(std::function<Matrix&(double)> w, double duration, 
 }
 
 std::ostream& operator<<(std::ostream &os, EulerAngle &e) {
-    std::cout << "Printing angle" << std::endl;
-    os << "Axis 1: " << e.m_axis1 << " Axis 2: " << e.m_axis2 << " Axis 3: " << e.m_axis3;
-    os << " Theta 1: " << e.m_t1 << " Theta 2: " << e.m_t2 << " Theta 3: " << e.m_t3 << std::endl;
+    os << "Axes: (" << e.m_axis1 << ", " << e.m_axis2 << ", " << e.m_axis3 << ")";
+    os << " Thetas: (" << e.m_t1 << ", " << e.m_t2 << ", " << e.m_t3 << ")";
     return os;
 }
