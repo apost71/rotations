@@ -57,9 +57,18 @@ std::unique_ptr<RotationParameters> EulerAngle::add(RotationParameters &o) {
         return fromDCM(dcm);
     }
 }
-//TODO: implement me!
+
 std::unique_ptr<RotationParameters> EulerAngle::subtract(RotationParameters &o){
-    return std::make_unique<EulerAngle>(EulerAngle(m_axis1, m_axis2, m_axis3));
+    if (isSymmetric()) {
+        // subtraction if euler angles are identical and symmetric
+        return std::make_unique<EulerAngle>(*this);
+    } else {
+        if (! m_dcm) {
+            *m_dcm = toDCM();
+        }
+        Matrix dcm = m_dcm->multiply(o.toDCM().transpose());
+        return fromDCM(dcm);
+    }
 }
 
 bool EulerAngle::isSymmetric() {
@@ -68,7 +77,7 @@ bool EulerAngle::isSymmetric() {
 
 Matrix EulerAngle::toDCM() {
     if (! m_dcm) {
-        Matrix* dcm = new Matrix(3, 3);
+        auto dcm = new Matrix(3, 3);
         if (m_axis1 == 3 && m_axis2 == 2 && m_axis3 == 1) {
             (*dcm)(0, 0) = cos(m_t2)*cos(m_t1);
             (*dcm)(0, 1) = cos(m_t2)*sin(m_t1);
@@ -101,27 +110,23 @@ Matrix EulerAngle::toDCM() {
 }
 
 std::unique_ptr<RotationParameters> EulerAngle::fromDCM(Matrix &dcm){
-    try {
-        if (m_axis1 == 3 && m_axis2 == 2 && m_axis3 == 1) {
-            double t1 = atan2(dcm.get(0, 1), dcm.get(0, 0));
-            double t2 = -asin(dcm.get(0, 2));
-            double t3 = atan2(dcm.get(1, 2), dcm.get(2, 2));
-            return std::make_unique<EulerAngle>(m_axis1, m_axis2, m_axis3, t1, t2, t3);
-        } else if (m_axis1 == 3 && m_axis2 == 1 && m_axis3 == 3) {
-            m_t1 = atan2(dcm.get(2, 0), -dcm.get(2, 1));
-            m_t2 = acos(dcm.get(2, 2));
-            m_t3 = atan2(dcm.get(0, 2), dcm.get(1, 2));
-            return std::make_unique<EulerAngle>(*this);
-        } else {
-            throw "Unimplemented Exception";
-        }
-    } catch(std::exception &e) {
-        std::cout << "Caught exception: " << e.what() << std::endl;
+    if (m_axis1 == 3 && m_axis2 == 2 && m_axis3 == 1) {
+        double t1 = atan2(dcm(0, 1), dcm(0, 0));
+        double t2 = -asin(dcm(0, 2));
+        double t3 = atan2(dcm(1, 2), dcm(2, 2));
+        return std::make_unique<EulerAngle>(m_axis1, m_axis2, m_axis3, t1, t2, t3);
+    } else if (m_axis1 == 3 && m_axis2 == 1 && m_axis3 == 3) {
+        m_t1 = atan2(dcm(2, 0), -dcm(2, 1));
+        m_t2 = acos(dcm(2, 2));
+        m_t3 = atan2(dcm(0, 2), dcm(1, 2));
+        return std::make_unique<EulerAngle>(*this);
+    } else {
+        throw "Unimplemented Exception";
     }
 }
 
 Matrix EulerAngle::B(double t1, double t2, double t3) {
-    Matrix B = Matrix(3, 3);
+    auto B = Matrix(3, 3);
     if (m_axis1 == 3 && m_axis2 == 2 && m_axis3 == 1) {
         double c = 1/cos(t2);
         B(0, 0) = 0.;

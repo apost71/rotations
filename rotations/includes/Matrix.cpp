@@ -34,7 +34,6 @@ Matrix::Matrix(const Matrix &o) {
 }
 
 Matrix::~Matrix() {
-    std::cout << "Destructor Called" << std::endl;
     if (m_data) {
         for (int i = 0; i < m_rows; i++) {
             delete[] m_data[i];
@@ -104,6 +103,42 @@ double& Matrix::operator()(int row, int col){
     return m_data[row][col];
 }
 
+double Matrix::det() {
+    return getDeterminant(*this);
+}
+
+// Get determinant of n-dimensional matrix using laplace expansion
+double Matrix::getDeterminant(Matrix &m) {
+    if (m.m_cols == 2 && m.m_rows == 2) {
+        return m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0);
+    }
+    else {
+        double d = 0.0;
+        for (int i = 0; i < m.m_cols; i ++){
+            auto subMatrix = Matrix(m.m_rows - 1, m.m_cols - 1);
+            for (int j = 1; j < m.m_rows; j ++) {
+                for (int k = 0; k < m.m_cols; k ++) {
+                    int col_idx = k;
+                    if (k == i) {
+                        continue;
+                    } else if (k > i) {
+                        col_idx = k - 1;
+                    }
+                    subMatrix(j - 1, col_idx) = m(j, k);
+                }
+            }
+            if (i % 2 == 0) {
+                d += m(0, i) * getDeterminant(subMatrix);
+            } else {
+                d -= m(0, i) * getDeterminant(subMatrix);
+            }
+        }
+        return d;
+    }
+}
+
+
+
 std::ostream& operator<<(std::ostream& os, Matrix &m){
     os << "[" << std::endl;
     for (int i = 0; i < m.getRows(); i ++) {
@@ -118,4 +153,33 @@ std::ostream& operator<<(std::ostream& os, Matrix &m){
     }
     os << "]";
     return os;
+}
+
+Matrix operator*(Matrix &m1, Matrix &m2) {
+    if (m2.m_rows != m1.m_cols) {
+        throw std::runtime_error("Matrices dimensions must be compatible");
+    }
+
+    Matrix result = Matrix(m1.m_rows, m2.m_cols);
+    for (int i = 0; i < m1.m_rows; i ++) {
+        for (int j = 0; j < m2.m_cols; j ++) {
+            auto sum = new double(0);
+            for (int k = 0; k < m1.m_cols; k ++) {
+                *sum += m1.m_data[i][k] * m2.m_data[k][j];
+            }
+
+            result(i, j) = *sum;
+        }
+    }
+    return result;
+}
+
+Matrix operator*(double d, Matrix &m) {
+    Matrix result = Matrix(m.m_rows, m.m_cols);
+    for (int i = 0; i < m.m_rows; i++) {
+        for (int j = 0; j < m.m_cols; j++) {
+            result(i, j) = d * m(i, j);
+        }
+    }
+    return result;
 }

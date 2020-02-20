@@ -52,18 +52,18 @@ Matrix PRV::toDCM() {
         throw "Must initialize Ev and Phi to convert to DCM";
     }
     
-    Matrix* dcm = new Matrix(3, 3);
+    auto dcm = new Matrix(3, 3);
     if (! m_dcm) {
         double sigma = 1-cos(m_phi);
-        dcm->insert(0, 0, pow(m_Ev->get(0, 0), 2)*sigma + cos(m_phi));
-        dcm->insert(0, 1, m_Ev->get(0, 0)*m_Ev->get(1, 0)*sigma + m_Ev->get(2, 0)*sin(m_phi));
-        dcm->insert(0, 2, m_Ev->get(0, 0)*m_Ev->get(2, 0)*sigma - m_Ev->get(1, 0)*sin(m_phi));
-        dcm->insert(1, 0, m_Ev->get(1, 0)*m_Ev->get(0, 0)*sigma - m_Ev->get(2, 0)*sin(m_phi));
-        dcm->insert(1, 1, pow(m_Ev->get(1, 0), 2)*sigma + cos(m_phi));
-        dcm->insert(1, 2, m_Ev->get(1, 0)*m_Ev->get(2, 0)*sigma + m_Ev->get(0, 0)*sin(m_phi));
-        dcm->insert(2, 0, m_Ev->get(2, 0)*m_Ev->get(0, 0)*sigma + m_Ev->get(1, 0)*sin(m_phi));
-        dcm->insert(2, 1, m_Ev->get(2, 0)*m_Ev->get(1, 0)*sigma - m_Ev->get(0, 0)*sin(m_phi));
-        dcm->insert(2, 2, pow(m_Ev->get(2, 0), 2)*sigma + cos(m_phi));
+        (*dcm)(0, 0) = pow(m_Ev->get(0, 0), 2)*sigma + cos(m_phi);
+        (*dcm)(0, 1) = m_Ev->get(0, 0)*m_Ev->get(1, 0)*sigma + m_Ev->get(2, 0)*sin(m_phi);
+        (*dcm)(0, 2) = m_Ev->get(0, 0)*m_Ev->get(2, 0)*sigma - m_Ev->get(1, 0)*sin(m_phi);
+        (*dcm)(1, 0) = m_Ev->get(1, 0)*m_Ev->get(0, 0)*sigma - m_Ev->get(2, 0)*sin(m_phi);
+        (*dcm)(1, 1) = pow(m_Ev->get(1, 0), 2)*sigma + cos(m_phi);
+        (*dcm)(1, 2) = m_Ev->get(1, 0)*m_Ev->get(2, 0)*sigma + m_Ev->get(0, 0)*sin(m_phi);
+        (*dcm)(2, 0) = m_Ev->get(2, 0)*m_Ev->get(0, 0)*sigma + m_Ev->get(1, 0)*sin(m_phi);
+        (*dcm)(2, 1) = m_Ev->get(2, 0)*m_Ev->get(1, 0)*sigma - m_Ev->get(0, 0)*sin(m_phi);
+        (*dcm)(2, 2) = pow(m_Ev->get(2, 0), 2)*sigma + cos(m_phi);
         this->m_dcm = dcm;
     } else {
         throw "Unimplemented Exception";
@@ -85,9 +85,9 @@ std::unique_ptr<RotationParameters> PRV::fromDCM(Matrix &dcm) {
 }
 
 void PRV::printRadians() {
-    std::cout << "Phi: " << m_phi << "  E_v: [" << m_Ev->get(0, 0) << ", " << m_Ev->get(1, 0) << ", " << m_Ev->get(2, 0) << "]";
+    std::cout << "Phi: " << m_phi << "  E_v: [" << (*m_Ev)(0, 0) << ", " << (*m_Ev)(1, 0) << ", " << (*m_Ev)(2, 0) << "]";
 }
 
 void PRV::printDegrees() {
-    std::cout << "Phi: " << radianToDegrees(m_phi) << "  E_v: [" << radianToDegrees(m_Ev->get(0, 0)) << ", " << radianToDegrees(m_Ev->get(1, 0)) << ", " << radianToDegrees(m_Ev->get(2, 0)) << "]";
+    std::cout << "Phi: " << radianToDegrees(m_phi) << "  E_v: [" << radianToDegrees((*m_Ev)(0, 0)) << ", " << radianToDegrees((*m_Ev)(1, 0)) << ", " << radianToDegrees((*m_Ev)(2, 0)) << "]";
 }

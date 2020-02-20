@@ -32,6 +32,10 @@ public:
     void insert(int row, int column, double value);
     double get(int row, int col);
     double &operator()(int row, int col);
+    double det();
+    static double getDeterminant(Matrix &m);
+    friend Matrix operator*(Matrix &m1, Matrix &m2);
+    friend Matrix operator*(double d, Matrix &m);
     friend std::ostream& operator<<(std::ostream& os, Matrix &m);
 };
 #endif /* Matrix_hpp */
