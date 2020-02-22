@@ -206,11 +206,11 @@ Matrix operator/(Matrix &m, double d) {
 }
 
 std::pair<int, int> Matrix::max() {
-    auto max = std::pair(0, 0);
+    auto max = std::pair<int, int>(0, 0);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < m_cols; j ++) {
             if (m_data[i][j] > m_data[max.first][max.second]) {
-                max = std::pair(i, j);
+                max = std::pair<int, int>(i, j);
             }
         }
     }
@@ -218,11 +218,11 @@ std::pair<int, int> Matrix::max() {
 }
 
 std::pair<int, int> Matrix::min() {
-    auto min = std::pair(0, 0)
+    auto min = std::pair<int, int>(0, 0);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < m_cols; j ++) {
             if (m_data[i][j] < m_data[min.first][min.second]) {
-                min = m_data[i][j];
+                min = std::pair<int, int>(i, j);
             }
         }
     }
