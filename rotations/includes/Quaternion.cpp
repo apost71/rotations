@@ -42,7 +42,9 @@ Matrix Quaternion::toDCM() {
 }
 
 std::unique_ptr<RotationParameters> Quaternion::fromDCM(Matrix &dcm) {
-    throw "unimplemented error";
+    auto solver = ShepperdMethod(dcm);
+    Matrix b = solver.solve();
+    return std::make_unique<Quaternion>(b(0, 0), b(1, 0), b(2, 0), b(3, 0));
 }
 
 void Quaternion::printRadians() {
@@ -71,4 +73,31 @@ Quaternion Quaternion::fromPRV(PRV &p) {
 std::ostream& operator>>(std::ostream& os, Quaternion &q) {
     os << "B_0: " << q.m_b(0, 0) << " B_1: " << q.m_b(1, 0) << " B_2: " << q.m_b(2, 0) << " B_3: " << q.m_b(3, 0);
     return os;
+}
+
+Matrix ShepperdMethod::solve() {
+    Matrix b_squares = bSquares();
+    Matrix result = Matrix(4, 1);
+    auto max = b_squares.max();
+    for (int i = 0; i < result.getRows(); i ++) {
+        result(i, 0) = m_bFunctions[max.first][i](m_C, sqrt(b_squares(max.first, max.second)));
+    }
+    return result;
+}
+
+ShepperdMethod::ShepperdMethod(const ShepperdMethod &o) {
+    this->m_C = o.m_C;
+}
+
+ShepperdMethod::~ShepperdMethod() {
+    delete m_C;
+}
+
+Matrix ShepperdMethod::bSquares() {
+    auto b_squares = Matrix(4, 1);
+    b_squares(0, 0) = 0.25 * (1 + m_C->trace());
+    b_squares(1, 0) = 0.25 * (1 + 2*(*m_C)(0, 0) - m_C->trace());
+    b_squares(2, 0) = 0.25 * (1 + 2*(*m_C)(1, 1) - m_C->trace());
+    b_squares(3, 0) = 0.25 * (1 + 2*(*m_C)(2, 2) - m_C->trace());
+    return b_squares;
 }

@@ -34,6 +34,8 @@ public:
     double &operator()(int row, int col);
     double det();
     double trace();
+    std::pair<int, int> max();
+    std::pair<int, int> min();
     static double getDeterminant(Matrix &m);
     friend Matrix operator*(Matrix &m1, Matrix &m2);
     friend Matrix operator*(double d, Matrix &m);
