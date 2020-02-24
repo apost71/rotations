@@ -34,7 +34,7 @@ public:
 
     void printDegrees() override;
 
-    static Quaternion fromPRV(PRV &p);
+    static Quaternion& fromPRV(PRV &p);
 
     friend std::ostream& operator>>(std::ostream& os, Quaternion &q);
 

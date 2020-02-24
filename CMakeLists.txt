@@ -23,7 +23,7 @@ set(SOURCES
 
 add_executable(rotations ${SOURCES} rotations/src/main.cpp)
 
-add_executable(rotations_test ${SOURCES} rotations/test/test.cpp)
+add_executable(rotations_test ${SOURCES} rotations/test/test.cpp rotations/test/EulerAngleTest.cpp rotations/test/MatrixTest.cpp rotations/test/QuaternionTest.cpp)
 target_link_libraries(rotations_test Catch2::Catch2)
 
 include(CTest)

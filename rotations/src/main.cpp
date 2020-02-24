@@ -27,6 +27,17 @@ int main(int argc, const char * argv[]) {
     EulerAngle e3 = *dynamic_cast<EulerAngle*>(e2.fromDCM(result).get());
     std::cout << *dynamic_cast<EulerAngle*>(e2.fromDCM(result).get()) << std::endl;
     std::cout << e3 << std::endl;
+    std::cout << e << std::endl;
+
+    EulerAngle t = EulerAngle(3, 2, 1, 20, 30, 10);
+    EulerAngle e4 = *dynamic_cast<EulerAngle*>(e.add(t).get());
+    EulerAngle e5 = *dynamic_cast<EulerAngle*>(e4.subtract(t).get());
+
+    std::cout << "E4: " << e4 << std::endl;
+    std::cout << "E5: " << e5 << std::endl;
+    std::cout << "E: " << e << std::endl;
+
+    std::cout << "-------------------" << std::endl;
 
     auto m = Matrix(3, 3);
     std::cout << m << std::endl;

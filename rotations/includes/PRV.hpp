@@ -19,9 +19,10 @@ private:
     double m_phi = 0.0;
 public:
     PRV();
-    PRV(double phi, Matrix* Ev);
+    PRV(double phi, Matrix &Ev);
     PRV(const PRV &o);
     ~PRV();
+    PRV& operator=(const PRV &o);
     
     std::unique_ptr<RotationParameters> add(RotationParameters &o);
 
@@ -38,6 +39,8 @@ public:
     double getPhi();
 
     Matrix getEv();
+
+    friend std::ostream& operator<<(std::ostream &os, PRV &prv);
     
 };
 

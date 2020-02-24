@@ -17,18 +17,38 @@
 
 PRV::PRV(){}
 
-PRV::PRV(double phi, Matrix* Ev): m_phi(phi), m_Ev(Ev){
+// phi and E_v should be in radians
+PRV::PRV(double phi, Matrix &Ev){
+    m_Ev = new Matrix(3, 1);
+    (*m_Ev)(0, 0) = Ev(0, 0);
+    (*m_Ev)(1, 0) = Ev(1, 0);
+    (*m_Ev)(2, 0) = Ev(2, 0);
     m_phi = degreeToRadians(phi);
     m_name = "PRV";
 }
 
 PRV::PRV(const PRV &o) {
     this->m_phi = o.m_phi;
-    this->m_Ev = o.m_Ev;
+    this->m_Ev = new Matrix(3, 1);
+    (*m_Ev)(0, 0) = (*o.m_Ev)(0, 0);
+    (*m_Ev)(1, 0) = (*o.m_Ev)(1, 0);
+    (*m_Ev)(2, 0) = (*o.m_Ev)(2, 0);
 }
 
 PRV::~PRV() {
     delete m_Ev;
+}
+
+PRV& PRV::operator=(const PRV &o) {
+    if (this == &o)
+        return *this;
+    this->m_phi = o.m_phi;
+    this->m_Ev = new Matrix(3, 1);
+    (*m_Ev)(0, 0) = (*o.m_Ev)(0, 0);
+    (*m_Ev)(1, 0) = (*o.m_Ev)(1, 0);
+    (*m_Ev)(2, 0) = (*o.m_Ev)(2, 0);
+
+    return *this;
 }
 
 std::unique_ptr<RotationParameters> PRV::add(RotationParameters &o){
@@ -72,16 +92,16 @@ Matrix PRV::toDCM() {
 }
 
 std::unique_ptr<RotationParameters> PRV::fromDCM(Matrix &dcm) {
-    double c_phi = 0.5 * (dcm.get(0,0) + dcm.get(1, 1) + dcm.get(2, 2) - 1);
-    double phi = acos(c_phi);
-    double c = 1 / (2*sin(phi));
+    double c_phi = 0.5 * (dcm(0,0) + dcm(1, 1) + dcm(2, 2) - 1);
+    this->m_phi = acos(c_phi);
+    double c = 1 / (2*sin(this->m_phi));
     
-    Matrix* e_hat = new Matrix(3, 1);
-    e_hat->insert(0, 0, c * (dcm.get(1, 2) - dcm.get(2, 1)));
-    e_hat->insert(1, 0, c * (dcm.get(2, 0) - dcm.get(0, 2)));
-    e_hat->insert(2, 0, c * (dcm.get(0, 1) - dcm.get(1, 0)));
+    this->m_Ev = new Matrix(3, 1);
+    (*m_Ev)(0, 0) = c * (dcm.get(1, 2) - dcm.get(2, 1));
+    (*m_Ev)(1, 0) = c * (dcm.get(2, 0) - dcm.get(0, 2));
+    (*m_Ev)(2, 0) = c * (dcm.get(0, 1) - dcm.get(1, 0));
     
-    return std::make_unique<PRV>(PRV(phi, e_hat));
+    return std::make_unique<PRV>(*this);
 }
 
 void PRV::printRadians() {
@@ -98,4 +118,13 @@ double PRV::getPhi() {
 
 Matrix PRV::getEv() {
     return *m_Ev;
+}
+
+std::ostream &operator<<(std::ostream &os, PRV &prv){
+    os << "Phi: " << radianToDegrees(prv.m_phi) << " E_v: [" <<
+    radianToDegrees((*prv.m_Ev)(0, 0)) << ", " <<
+    radianToDegrees((*prv.m_Ev)(1, 0)) << ", " <<
+    radianToDegrees((*prv.m_Ev)(2, 0)) << "]";
+
+    return os;
 }

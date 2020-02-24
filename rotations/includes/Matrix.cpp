@@ -25,10 +25,11 @@ Matrix::Matrix(const Matrix &o) {
     this->m_rows = o.m_rows;
     this->m_cols = o.m_cols;
     this->m_data = new double*[m_rows];
+//    std::cout << "Matrix Copy Constructor" << std::endl;
     for (int i = 0; i < m_rows; i ++) {
-        m_data[i] = new double[m_cols];
+        this->m_data[i] = new double[m_cols];
         for (int j = 0; j < m_cols; j ++) {
-            m_data[i][j] = o.m_data[i][j];
+            this->m_data[i][j] = *new double(o.m_data[i][j]);
         }
     }
 }
@@ -36,7 +37,9 @@ Matrix::Matrix(const Matrix &o) {
 Matrix::~Matrix() {
     if (m_data) {
         for (int i = 0; i < m_rows; i++) {
-            delete[] m_data[i];
+            if (m_data[i]) {
+                delete[] m_data[i];
+            }
         }
         delete[] m_data;
     } else {
@@ -44,8 +47,8 @@ Matrix::~Matrix() {
     }
 }
 
-Matrix Matrix::multiply(Matrix o) {
-    Matrix* result = new Matrix(m_rows, o.m_cols);
+Matrix Matrix::multiply(const Matrix &o) {
+    auto result = new Matrix(m_rows, o.m_cols);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < o.m_cols; j ++) {
             auto sum = new double(0);
@@ -155,12 +158,12 @@ std::ostream& operator<<(std::ostream& os, Matrix &m){
     return os;
 }
 
-Matrix operator*(Matrix &m1, Matrix &m2) {
+Matrix& operator*(Matrix &m1, Matrix &m2) {
     if (m2.m_rows != m1.m_cols) {
         throw std::runtime_error("Matrices dimensions must be compatible");
     }
 
-    Matrix result = Matrix(m1.m_rows, m2.m_cols);
+    auto result = new Matrix(m1.m_rows, m2.m_cols);
     for (int i = 0; i < m1.m_rows; i ++) {
         for (int j = 0; j < m2.m_cols; j ++) {
             auto sum = new double(0);
@@ -168,10 +171,10 @@ Matrix operator*(Matrix &m1, Matrix &m2) {
                 *sum += m1.m_data[i][k] * m2.m_data[k][j];
             }
 
-            result(i, j) = *sum;
+            (*result)(i, j) = *sum;
         }
     }
-    return result;
+    return *result;
 }
 
 double Matrix::trace() {
@@ -185,7 +188,7 @@ double Matrix::trace() {
     return d;
 }
 
-Matrix operator*(double d, Matrix &m) {
+Matrix& operator*(double d, Matrix &m) {
     Matrix result = Matrix(m.m_rows, m.m_cols);
     for (int i = 0; i < m.m_rows; i++) {
         for (int j = 0; j < m.m_cols; j++) {
@@ -195,7 +198,7 @@ Matrix operator*(double d, Matrix &m) {
     return result;
 }
 
-Matrix operator/(Matrix &m, double d) {
+Matrix& operator/(Matrix &m, double d) {
     auto result = Matrix(m.m_rows, m.m_cols);
     for (int i = 0; i < m.m_rows; i ++) {
         for (int j = 0; j < m.m_cols; j ++) {
@@ -227,4 +230,35 @@ std::pair<int, int> Matrix::min() {
         }
     }
     return min;
+}
+
+bool operator==(const Matrix &m1, const Matrix &m2) {
+    if (m1.m_rows != m2.m_rows || m1.m_cols != m2.m_cols) {
+        return false;
+    }
+    for (int i = 0; i < m1.m_rows; i ++ ) {
+        for (int j = 0; j < m1.m_cols; j ++) {
+            if (m1.m_data[i][j] != m2.m_data[i][j]) {
+                std::cerr << "Index: " << i << ", " << j << " did not match" << std::endl;
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+Matrix& Matrix::operator=(const Matrix &o) {
+    if(this == &o)
+        return *this;
+
+    this->m_rows = o.m_rows;
+    this->m_cols = o.m_cols;
+    this->m_data = new double*[m_rows];
+    for (int i = 0; i < m_rows; i ++) {
+        this->m_data[i] = new double[m_cols];
+        for (int j = 0; j < m_cols; j ++) {
+            this->m_data[i][j] = *new double(o.m_data[i][j]);
+        }
+    }
+    return *this;
 }

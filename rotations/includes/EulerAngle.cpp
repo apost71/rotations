@@ -64,7 +64,7 @@ std::unique_ptr<RotationParameters> EulerAngle::subtract(RotationParameters &o){
 }
 
 bool EulerAngle::isSymmetric() {
-    return m_axis1 == m_axis3;
+    return false;
 }
 
 Matrix EulerAngle::toDCM() {
@@ -77,7 +77,7 @@ Matrix EulerAngle::toDCM() {
             (*dcm)(1, 0) = sin(m_t3)*sin(m_t2)*cos(m_t1) - cos(m_t3)*sin(m_t1);
             (*dcm)(1, 1) = sin(m_t3)*sin(m_t2)*sin(m_t1) + cos(m_t3)*cos(m_t1);
             (*dcm)(1, 2) = sin(m_t3)*cos(m_t2);
-            (*dcm)(2, 0) =  cos(m_t3)*sin(m_t2)*sin(m_t1) + sin(m_t3)*sin(m_t1);
+            (*dcm)(2, 0) = cos(m_t3)*sin(m_t2)*cos(m_t1) + sin(m_t3)*sin(m_t1);
             (*dcm)(2, 1) = cos(m_t3)*sin(m_t2)*sin(m_t1) - sin(m_t3)*cos(m_t1);
             (*dcm)(2, 2) = cos(m_t3)*cos(m_t2);
             this->m_dcm = dcm;
@@ -106,7 +106,7 @@ std::unique_ptr<RotationParameters> EulerAngle::fromDCM(Matrix &dcm){
         double t1 = atan2(dcm(0, 1), dcm(0, 0));
         double t2 = -asin(dcm(0, 2));
         double t3 = atan2(dcm(1, 2), dcm(2, 2));
-        return std::make_unique<EulerAngle>(m_axis1, m_axis2, m_axis3, t1, t2, t3);
+        return std::make_unique<EulerAngle>(m_axis1, m_axis2, m_axis3, radianToDegrees(t1), radianToDegrees(t2), radianToDegrees(t3));
     } else if (m_axis1 == 3 && m_axis2 == 1 && m_axis3 == 3) {
         m_t1 = atan2(dcm(2, 0), -dcm(2, 1));
         m_t2 = acos(dcm(2, 2));
@@ -161,4 +161,27 @@ std::ostream& operator<<(std::ostream &os, EulerAngle &e) {
     os << "Axes: (" << e.m_axis1 << ", " << e.m_axis2 << ", " << e.m_axis3 << ")";
     os << " Thetas: (" << e.m_t1 << ", " << e.m_t2 << ", " << e.m_t3 << ")";
     return os;
+}
+
+bool operator==(const EulerAngle &lhs, const EulerAngle &rhs) {
+    return
+        lhs.m_axis1 == rhs.m_axis1 &&
+        lhs.m_axis2 == rhs.m_axis2 &&
+        lhs.m_axis3 == rhs.m_axis3 &&
+        abs(lhs.m_t1 - rhs.m_t1) < std::numeric_limits<double>::epsilon() &&
+        abs(lhs.m_t2 - rhs.m_t2) < std::numeric_limits<double>::epsilon() &&
+        abs(lhs.m_t3 - rhs.m_t3) < std::numeric_limits<double>::epsilon();
+}
+
+EulerAngle &EulerAngle::operator=(const EulerAngle &o) {
+    if (this == &o) {
+        return *this;
+    }
+    this->m_axis1 = o.m_axis1;
+    this->m_axis2 = o.m_axis2;
+    this->m_axis3 = o.m_axis3;
+    this->m_t1 = o.m_t1;
+    this->m_t2 = o.m_t2;
+    this->m_t3 = o.m_t3;
+    return *this;
 }

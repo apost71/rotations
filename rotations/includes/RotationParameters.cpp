@@ -36,16 +36,13 @@ Matrix RotationParameters::subtractDCM(RotationParameters &o) {
     return m_dcm->multiply(o.toDCM().transpose());
 }
 
-Matrix RotationParameters::toDCM() {
-    return *m_dcm;
-}
 
 double degreeToRadians(double d) {
     return (2*M_PI) * (d / 360);
 }
 
 double radianToDegrees(double r) {
-    return r * (180/M_PI);
+    return r * (180./M_PI);
 }
 
 std::unique_ptr<RotationParameters> RotationParameters::add(RotationParameters &o) {

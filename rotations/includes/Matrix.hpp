@@ -24,7 +24,7 @@ public:
     Matrix(const Matrix &o);
     ~Matrix();
     
-    Matrix multiply(Matrix o);
+    Matrix multiply(const Matrix &o);
     Matrix transpose() ;
     int getRows() const;
     int getColumns() const;
@@ -37,9 +37,11 @@ public:
     std::pair<int, int> max();
     std::pair<int, int> min();
     static double getDeterminant(Matrix &m);
-    friend Matrix operator*(Matrix &m1, Matrix &m2);
-    friend Matrix operator*(double d, Matrix &m);
-    friend Matrix operator/(Matrix &m, double d);
+    friend Matrix& operator*(Matrix &m1, Matrix &m2);
+    friend Matrix& operator*(double d, Matrix &m);
+    friend Matrix& operator/(Matrix &m, double d);
     friend std::ostream& operator<<(std::ostream& os, Matrix &m);
+    friend bool operator==(const Matrix &m1, const Matrix &m2);
+    Matrix& operator=(const Matrix &o);
 };
 #endif /* Matrix_hpp */

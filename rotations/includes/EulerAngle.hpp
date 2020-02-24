@@ -36,6 +36,8 @@ public:
     
     ~EulerAngle();
 
+    EulerAngle& operator=(const EulerAngle &o);
+
     std::unique_ptr<RotationParameters> add(RotationParameters &o);
 
     std::unique_ptr<RotationParameters> subtract(RotationParameters &o);
@@ -55,6 +57,7 @@ public:
     Matrix integrate(std::function<Matrix&(double)> w, double duration, double step);
 
     friend std::ostream& operator<<(std::ostream &os, EulerAngle &e);
+    friend bool operator==(const EulerAngle &lhs, const EulerAngle &rhs);
 };
 
 #endif /* EulerAngle_hpp */

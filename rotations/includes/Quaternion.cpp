@@ -63,11 +63,11 @@ double Quaternion::length() {
     return m_b(0, 0) + m_b(1, 0) + m_b(2, 0) + m_b(3, 0);
 }
 
-Quaternion Quaternion::fromPRV(PRV &p) {
+Quaternion& Quaternion::fromPRV(PRV &p) {
     double b0 = cos(p.getPhi()/2);
     Matrix tmp = p.getEv();
     Matrix e = sin(p.getPhi()/2) * tmp;
-    return Quaternion(b0, e(0, 0), e(1, 0), e(2, 0));
+    return *new Quaternion(b0, e(0, 0), e(1, 0), e(2, 0));
 }
 
 std::ostream& operator>>(std::ostream& os, Quaternion &q) {
