@@ -19,7 +19,7 @@ PRV::PRV(){}
 
 // phi and E_v should be in radians
 PRV::PRV(double phi, Matrix &Ev){
-    m_Ev = new Matrix(3, 1);
+    m_Ev = std::make_unique<Matrix>(3, 1);
     (*m_Ev)(0, 0) = Ev(0, 0);
     (*m_Ev)(1, 0) = Ev(1, 0);
     (*m_Ev)(2, 0) = Ev(2, 0);
@@ -29,21 +29,19 @@ PRV::PRV(double phi, Matrix &Ev){
 
 PRV::PRV(const PRV &o) {
     this->m_phi = o.m_phi;
-    this->m_Ev = new Matrix(3, 1);
+    this->m_Ev = std::make_unique<Matrix>(3, 1);
     (*m_Ev)(0, 0) = (*o.m_Ev)(0, 0);
     (*m_Ev)(1, 0) = (*o.m_Ev)(1, 0);
     (*m_Ev)(2, 0) = (*o.m_Ev)(2, 0);
 }
 
-PRV::~PRV() {
-    delete m_Ev;
-}
+PRV::~PRV() {}
 
 PRV& PRV::operator=(const PRV &o) {
     if (this == &o)
         return *this;
     this->m_phi = o.m_phi;
-    this->m_Ev = new Matrix(3, 1);
+    this->m_Ev = std::make_unique<Matrix>(3, 1);
     (*m_Ev)(0, 0) = (*o.m_Ev)(0, 0);
     (*m_Ev)(1, 0) = (*o.m_Ev)(1, 0);
     (*m_Ev)(2, 0) = (*o.m_Ev)(2, 0);
@@ -96,7 +94,7 @@ std::unique_ptr<RotationParameters> PRV::fromDCM(Matrix &dcm) {
     this->m_phi = acos(c_phi);
     double c = 1 / (2*sin(this->m_phi));
     
-    this->m_Ev = new Matrix(3, 1);
+    this->m_Ev = std::make_unique<Matrix>(3, 1);
     (*m_Ev)(0, 0) = c * (dcm.get(1, 2) - dcm.get(2, 1));
     (*m_Ev)(1, 0) = c * (dcm.get(2, 0) - dcm.get(0, 2));
     (*m_Ev)(2, 0) = c * (dcm.get(0, 1) - dcm.get(1, 0));

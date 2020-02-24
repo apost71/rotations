@@ -15,7 +15,7 @@
 
 class PRV: public RotationParameters {
 private:
-    Matrix* m_Ev = nullptr;
+    std::unique_ptr<Matrix> m_Ev = nullptr;
     double m_phi = 0.0;
 public:
     PRV();

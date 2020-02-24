@@ -29,7 +29,7 @@ Matrix::Matrix(const Matrix &o) {
     for (int i = 0; i < m_rows; i ++) {
         this->m_data[i] = new double[m_cols];
         for (int j = 0; j < m_cols; j ++) {
-            this->m_data[i][j] = *new double(o.m_data[i][j]);
+            this->m_data[i][j] = o.m_data[i][j];
         }
     }
 }
@@ -48,7 +48,7 @@ Matrix::~Matrix() {
 }
 
 Matrix Matrix::multiply(const Matrix &o) {
-    auto result = new Matrix(m_rows, o.m_cols);
+    auto result = std::make_unique<Matrix>(o.m_rows, o.m_cols);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < o.m_cols; j ++) {
             auto sum = new double(0);
@@ -96,7 +96,7 @@ void Matrix::print() {
 }
 
 double Matrix::get(int row, int col) {
-    return m_data[row][col];
+    return m_data.get()[row][col];
 }
 
 double& Matrix::operator()(int row, int col){
@@ -163,15 +163,15 @@ Matrix& operator*(Matrix &m1, Matrix &m2) {
         throw std::runtime_error("Matrices dimensions must be compatible");
     }
 
-    auto result = new Matrix(m1.m_rows, m2.m_cols);
+    auto result = std::make_unique<Matrix>(m1.m_rows, m2.m_cols);
     for (int i = 0; i < m1.m_rows; i ++) {
         for (int j = 0; j < m2.m_cols; j ++) {
-            auto sum = new double(0);
+            double sum = 0;
             for (int k = 0; k < m1.m_cols; k ++) {
-                *sum += m1.m_data[i][k] * m2.m_data[k][j];
+                sum += m1.m_data[i][k] * m2.m_data[k][j];
             }
 
-            (*result)(i, j) = *sum;
+            (*result)(i, j) = sum;
         }
     }
     return *result;
@@ -189,13 +189,13 @@ double Matrix::trace() {
 }
 
 Matrix& operator*(double d, Matrix &m) {
-    Matrix result = Matrix(m.m_rows, m.m_cols);
+    auto result = std::make_unique<Matrix>(m.m_rows, m.m_cols);
     for (int i = 0; i < m.m_rows; i++) {
         for (int j = 0; j < m.m_cols; j++) {
-            result(i, j) = d * m(i, j);
+            (*result)(i, j) = d * m(i, j);
         }
     }
-    return result;
+    return *result;
 }
 
 Matrix& operator/(Matrix &m, double d) {
@@ -257,7 +257,7 @@ Matrix& Matrix::operator=(const Matrix &o) {
     for (int i = 0; i < m_rows; i ++) {
         this->m_data[i] = new double[m_cols];
         for (int j = 0; j < m_cols; j ++) {
-            this->m_data[i][j] = *new double(o.m_data[i][j]);
+            this->m_data[i][j] = o.m_data[i][j];
         }
     }
     return *this;
