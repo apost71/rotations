@@ -96,7 +96,7 @@ void Matrix::print() {
 }
 
 double Matrix::get(int row, int col) {
-    return m_data.get()[row][col];
+    return m_data[row][col];
 }
 
 double& Matrix::operator()(int row, int col){
