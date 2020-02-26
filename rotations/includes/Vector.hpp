@@ -7,6 +7,7 @@
 
 
 #include <memory>
+#include <iostream>
 
 class Vector {
 private:
@@ -23,6 +24,10 @@ public:
     int getLength();
     double& operator[](int i);
     double norm();
+    void normalize();
+
+    friend bool operator==(const Vector &lhs, const Vector &rhs);
+    friend std::ostream& operator<<(std::ostream &os, Vector &v);
 
 };
 

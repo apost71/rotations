@@ -12,13 +12,13 @@
 Matrix::Matrix(): Matrix(3, 3) {}
 
 Matrix::Matrix(int rows, int cols){
-    m_rows = rows;
-    m_cols = cols;
+    this->m_rows = rows;
+    this->m_cols = cols;
     this->m_data = new Vector[rows];
     for (int i = 0; i < rows; i ++) {
-        m_data[i] = Vector(m_cols);
+        this->m_data[i] = Vector(m_cols);
         for (int j = 0; j < cols; j ++) {
-            m_data[i][j] = 0;
+            this->m_data[i][j] = 0;
         }
     }
 }
@@ -28,7 +28,7 @@ Matrix::Matrix(const Matrix &o) {
     this->m_cols = o.getColumns();
     this->m_data = new Vector[o.m_rows];
     for (int i = 0; i < m_rows; i ++) {
-        m_data[i] = Vector(m_cols);
+        this->m_data[i] = Vector(m_cols);
         for (int j = 0; j < m_cols; j ++) {
             this->m_data[i][j] = o.m_data[i][j];
         }
@@ -36,15 +36,40 @@ Matrix::Matrix(const Matrix &o) {
 }
 
 Matrix::Matrix(Vector &v) {
-
+    this->m_rows = 1;
+    this->m_cols = v.getLength();
+    this->m_data = new Vector[1];
+    this->m_data[0] = v;
 }
 
-Matrix::Matrix(std::initializer_list<Vector> &list) {
-
+Matrix::Matrix(const std::initializer_list<Vector> &list) {
+    this->m_rows = list.size();
+    this->m_data = new Vector[list.size()];
+    int i = 0;
+    int cols = 0;
+    for (auto &element: list) {
+        m_data[i] = element;
+        if (m_data[i].getLength() > cols) {
+            cols = m_data[i].getLength();
+        }
+        i++;
+    }
+    this->m_cols = cols;
 }
 
-Matrix::Matrix(std::initializer_list<std::initializer_list<double>> &list) {
-
+Matrix::Matrix(const std::initializer_list<std::initializer_list<double>> &list) {
+    this->m_rows = list.size();
+    this->m_data = new Vector[list.size()];
+    int i = 0;
+    int cols = 0;
+    for (auto &element: list) {
+        this->m_data[i] = Vector(element);
+        if (this->m_data[i].getLength() > cols) {
+            cols = this->m_data[i].getLength();
+        }
+        i++;
+    }
+    this->m_cols = cols;
 }
 
 
@@ -89,15 +114,6 @@ int Matrix::getRows() const {
 
 int Matrix::getColumns() const {
     return m_cols;
-}
-
-void Matrix::print() {
-    for (int i = 0; i < m_rows; i ++) {
-        for (int j = 0; j < m_cols; j++) {
-            std::cout << m_data[i][j] << " ";
-        }
-        std::cout << std::endl;
-    }
 }
 
 double Matrix::get(int row, int col) {
@@ -179,7 +195,6 @@ Matrix& operator*(Matrix &m1, Matrix &m2) {
             (*result)(i, j) = sum;
         }
     }
-    std::cout << *result << std::endl;
     return *result;
 }
 

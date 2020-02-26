@@ -23,16 +23,15 @@ public:
     Matrix();
     Matrix(int rows, int cols);
     Matrix(Vector &v);
-    Matrix(std::initializer_list<Vector> &list);
-    Matrix(std::initializer_list<std::initializer_list<double>> &list);
+    Matrix(const std::initializer_list<Vector> &list);
+    Matrix(const std::initializer_list<std::initializer_list<double>> &list);
     Matrix(const Matrix &o);
     ~Matrix();
     
     Matrix& multiply(const Matrix &o);
     Matrix& transpose() ;
-    int getRows() const;
-    int getColumns() const;
-    void print();
+    [[nodiscard]] int getRows() const;
+    [[nodiscard]] int getColumns() const;
     void insert(int row, int column, double value);
     double get(int row, int col);
     double &operator()(int row, int col);

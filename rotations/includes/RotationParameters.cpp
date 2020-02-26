@@ -52,9 +52,7 @@ std::unique_ptr<RotationParameters> RotationParameters::add(RotationParameters &
     if (! m_dcm) {
         *m_dcm = toDCM();
     }
-    std::cout << *m_dcm << std::endl;
     Matrix other = o.toDCM();
-    std::cout << other << std::endl;
     Matrix dcm = *m_dcm * other;
     return fromDCM(dcm);
 }

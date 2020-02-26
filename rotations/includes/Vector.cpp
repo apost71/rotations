@@ -62,3 +62,32 @@ double Vector::norm() {
     return sqrt(sum);
 }
 
+bool operator==(const Vector &lhs, const Vector &rhs) {
+    if (lhs.length != rhs.length) {
+        return false;
+    }
+
+    for (int i = 0; i < lhs.length; i ++ ){
+        if (abs(lhs.m_data[i] - rhs.m_data[i]) >= std::numeric_limits<double>::epsilon()) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void Vector::normalize() {
+    double mag = this->norm();
+    for (int i = 0; i < length; i ++) {
+        this->m_data[i] = this->m_data[i] / mag;
+    }
+}
+
+std::ostream &operator<<(std::ostream &os, Vector &v) {
+    os << "[";
+    for (int i = 0; i < v.getLength() - 1; i++) {
+        os << v[i] << ", ";
+    }
+    os << v[v.getLength() - 1] << "]";
+    return os;
+}
+

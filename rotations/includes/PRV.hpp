@@ -15,11 +15,12 @@
 
 class PRV: public RotationParameters {
 private:
-    std::unique_ptr<Matrix> m_Ev = nullptr;
+    Vector* m_Ev = nullptr;
     double m_phi = 0.0;
 public:
     PRV();
-    PRV(double phi, Matrix &Ev);
+    PRV(double phi, Vector &Ev);
+    PRV(double phi, const std::initializer_list<double> &list);
     PRV(const PRV &o);
     ~PRV();
     PRV& operator=(const PRV &o);
@@ -41,6 +42,8 @@ public:
     Matrix getEv();
 
     friend std::ostream& operator<<(std::ostream &os, PRV &prv);
+
+    friend bool operator==(const PRV &lhs, const PRV &rhs);
     
 };
 

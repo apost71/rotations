@@ -32,6 +32,25 @@ TEST_CASE( "PRV should perform basic operations", "[PRV]" ) {
     EulerAngle e = EulerAngle(3, 2, 1, 10, 20, 30);
     PRV p = PRV();
     Matrix m = e.toDCM();
-    p = *dynamic_cast<PRV*>(p.fromDCM(m).get());
-    std::cout << p << std::endl;
+    p = *dynamic_cast<PRV *>(p.fromDCM(m).get());
+
+    SECTION("Should convert to DCM and back") {
+        PRV r;
+        Matrix m2 = p.toDCM();
+        r = *dynamic_cast<PRV *>(r.fromDCM(m2).get());
+
+        REQUIRE(p == r);
+    }
+
+    SECTION("Should add and subtract properly") {
+        EulerAngle e2 = EulerAngle(3, 2, 1, 20, 5, 15);
+        PRV p2 = PRV();
+        Matrix m2 = e.toDCM();
+        p2 = *dynamic_cast<PRV *>(p2.fromDCM(m2).get());
+
+        PRV p3 = *dynamic_cast<PRV*>(p.add(p2).get());
+        PRV p4 = *dynamic_cast<PRV*>(p3.subtract(p2).get());
+
+        REQUIRE(p == p4);
+    }
 }

@@ -102,7 +102,6 @@ Matrix EulerAngle::toDCM() {
 
 std::unique_ptr<RotationParameters> EulerAngle::fromDCM(Matrix &dcm){
     if (m_axis1 == 3 && m_axis2 == 2 && m_axis3 == 1) {
-        std::cout << dcm << std::endl;
         double t1 = atan2(dcm(0, 1), dcm(0, 0));
         double t2 = -asin(dcm(0, 2));
         double t3 = atan2(dcm(1, 2), dcm(2, 2));

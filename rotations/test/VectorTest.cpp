@@ -4,7 +4,7 @@
 
 #include <Vector.hpp>
 #include "catch2/catch.hpp"
-
+#include <iostream>
 TEST_CASE("Should initialize correctly", "[vector]") {
 
     SECTION("Should initialize with zeros") {
@@ -59,5 +59,15 @@ TEST_CASE("Should perform vector operations") {
     SECTION("Should compute norm") {
         Vector v = Vector({1, 2, 3});
         REQUIRE(v.norm() == 3.7416573867739413);
+    }
+}
+
+TEST_CASE("Should normalize") {
+
+    SECTION("Should normalize large numbers") {
+        Vector v = Vector({20, 40, 60});
+        v.normalize();
+        Vector result = Vector({0.267261, 0.534522, 0.801784});
+        REQUIRE(v == result);
     }
 }
