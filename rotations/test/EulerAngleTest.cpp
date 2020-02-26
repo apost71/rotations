@@ -22,6 +22,7 @@ TEST_CASE( "Euler Angles can perform basic operations", "[Euler_Angles]" ) {
         EulerAngle e2 = EulerAngle(3, 2, 1, 20, 10, 5);
         EulerAngle e3 = *dynamic_cast<EulerAngle*>(e.add(e2).get());
         EulerAngle e4 = *dynamic_cast<EulerAngle*>(e3.subtract(e2).get());
+
         REQUIRE(e == e4);
     }
 }

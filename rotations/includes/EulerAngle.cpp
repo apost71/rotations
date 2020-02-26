@@ -34,7 +34,6 @@ EulerAngle::EulerAngle(int axis1, int axis2, int axis3, double t1, double t2, do
     EulerAngle::EulerAngle(axis1, axis2, axis3, t1, t2, t3, "Euler Angle") {}
 
 EulerAngle::EulerAngle(const EulerAngle &o) {
-    std::cout << "Copy Constructor" << std::endl;
     this->m_axis1 = o.m_axis1;
     this->m_axis2 = o.m_axis2;
     this->m_axis3 = o.m_axis3;
@@ -103,6 +102,7 @@ Matrix EulerAngle::toDCM() {
 
 std::unique_ptr<RotationParameters> EulerAngle::fromDCM(Matrix &dcm){
     if (m_axis1 == 3 && m_axis2 == 2 && m_axis3 == 1) {
+        std::cout << dcm << std::endl;
         double t1 = atan2(dcm(0, 1), dcm(0, 0));
         double t2 = -asin(dcm(0, 2));
         double t3 = atan2(dcm(1, 2), dcm(2, 2));
@@ -185,3 +185,4 @@ EulerAngle &EulerAngle::operator=(const EulerAngle &o) {
     this->m_t3 = o.m_t3;
     return *this;
 }
+

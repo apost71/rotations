@@ -27,7 +27,7 @@ public:
     RotationParameters(){};
     RotationParameters(const RotationParameters &o);
     virtual ~RotationParameters();
-    
+
     Matrix addDCM(RotationParameters &o);
     
     Matrix subtractDCM(RotationParameters &o);

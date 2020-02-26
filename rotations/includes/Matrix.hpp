@@ -11,21 +11,25 @@
 
 #include <stdio.h>
 #include <iostream>
+#include "Vector.hpp"
 
 class Matrix {
 private:
-    double** m_data;
-    int m_cols;
-    int m_rows;
+    Vector* m_data;
+    int m_cols = 0;
+    int m_rows = 0;
     
 public:
     Matrix();
     Matrix(int rows, int cols);
+    Matrix(Vector &v);
+    Matrix(std::initializer_list<Vector> &list);
+    Matrix(std::initializer_list<std::initializer_list<double>> &list);
     Matrix(const Matrix &o);
     ~Matrix();
     
-    Matrix multiply(const Matrix &o);
-    Matrix transpose() ;
+    Matrix& multiply(const Matrix &o);
+    Matrix& transpose() ;
     int getRows() const;
     int getColumns() const;
     void print();
@@ -34,8 +38,8 @@ public:
     double &operator()(int row, int col);
     double det();
     double trace();
-    std::pair<int, int> max();
-    std::pair<int, int> min();
+    std::pair<int, int>& max();
+    std::pair<int, int>& min();
     static double getDeterminant(Matrix &m);
     friend Matrix& operator*(Matrix &m1, Matrix &m2);
     friend Matrix& operator*(double d, Matrix &m);

@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 SET(OSX_MAJOR_VERSION 10)
 SET(OSX_MINOR_VERSION 15)
 SET(CMAKE_OSX_SYSROOT /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk)
@@ -19,11 +18,11 @@ set(SOURCES
         "rotations/includes/EulerAngle.cpp"
         "rotations/includes/PRV.cpp"
         "rotations/includes/RotationParameters.cpp"
-        rotations/includes/Quaternion.hpp rotations/includes/Quaternion.cpp)
+        rotations/includes/Quaternion.hpp rotations/includes/Quaternion.cpp rotations/includes/Vector.cpp rotations/includes/Vector.hpp)
 
 add_executable(rotations ${SOURCES} rotations/src/main.cpp)
 
-add_executable(rotations_test ${SOURCES} rotations/test/test.cpp rotations/test/EulerAngleTest.cpp rotations/test/MatrixTest.cpp rotations/test/QuaternionTest.cpp)
+add_executable(rotations_test ${SOURCES} rotations/test/test.cpp rotations/test/EulerAngleTest.cpp rotations/test/MatrixTest.cpp rotations/test/QuaternionTest.cpp rotations/test/VectorTest.cpp)
 target_link_libraries(rotations_test Catch2::Catch2)
 
 include(CTest)

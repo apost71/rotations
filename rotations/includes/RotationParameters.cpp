@@ -13,13 +13,16 @@
 
 RotationParameters::RotationParameters(const RotationParameters &o){
     if (o.m_dcm) {
-        this->m_dcm = o.m_dcm;
+        *this->m_dcm = *o.m_dcm;
     }
 }
 
-RotationParameters::~RotationParameters(){
-    delete this->m_dcm;
+RotationParameters::~RotationParameters() {
+    if (this->m_dcm) {
+        delete m_dcm;
+    }
 }
+
 
 Matrix RotationParameters::addDCM(RotationParameters &o) {
     if (! m_dcm) {
@@ -49,7 +52,9 @@ std::unique_ptr<RotationParameters> RotationParameters::add(RotationParameters &
     if (! m_dcm) {
         *m_dcm = toDCM();
     }
+    std::cout << *m_dcm << std::endl;
     Matrix other = o.toDCM();
+    std::cout << other << std::endl;
     Matrix dcm = *m_dcm * other;
     return fromDCM(dcm);
 }

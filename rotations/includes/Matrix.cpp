@@ -11,10 +11,12 @@
 
 Matrix::Matrix(): Matrix(3, 3) {}
 
-Matrix::Matrix(int rows, int cols): m_rows(rows), m_cols(cols){
-    m_data = new double*[rows];
+Matrix::Matrix(int rows, int cols){
+    m_rows = rows;
+    m_cols = cols;
+    this->m_data = new Vector[rows];
     for (int i = 0; i < rows; i ++) {
-        m_data[i] = new double[cols];
+        m_data[i] = Vector(m_cols);
         for (int j = 0; j < cols; j ++) {
             m_data[i][j] = 0;
         }
@@ -22,33 +24,36 @@ Matrix::Matrix(int rows, int cols): m_rows(rows), m_cols(cols){
 }
 
 Matrix::Matrix(const Matrix &o) {
-    this->m_rows = o.m_rows;
-    this->m_cols = o.m_cols;
-    this->m_data = new double*[m_rows];
-//    std::cout << "Matrix Copy Constructor" << std::endl;
+    this->m_rows = o.getRows();
+    this->m_cols = o.getColumns();
+    this->m_data = new Vector[o.m_rows];
     for (int i = 0; i < m_rows; i ++) {
-        this->m_data[i] = new double[m_cols];
+        m_data[i] = Vector(m_cols);
         for (int j = 0; j < m_cols; j ++) {
             this->m_data[i][j] = o.m_data[i][j];
         }
     }
 }
 
-Matrix::~Matrix() {
-    if (m_data) {
-        for (int i = 0; i < m_rows; i++) {
-            if (m_data[i]) {
-                delete[] m_data[i];
-            }
-        }
-        delete[] m_data;
-    } else {
-        std::cout << "Data not initialized" << std::endl;
-    }
+Matrix::Matrix(Vector &v) {
+
 }
 
-Matrix Matrix::multiply(const Matrix &o) {
-    auto result = std::make_unique<Matrix>(o.m_rows, o.m_cols);
+Matrix::Matrix(std::initializer_list<Vector> &list) {
+
+}
+
+Matrix::Matrix(std::initializer_list<std::initializer_list<double>> &list) {
+
+}
+
+
+Matrix::~Matrix() {
+    delete [] m_data;
+}
+
+Matrix& Matrix::multiply(const Matrix &o) {
+    auto result = new Matrix(m_rows, o.m_cols);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < o.m_cols; j ++) {
             auto sum = new double(0);
@@ -61,7 +66,7 @@ Matrix Matrix::multiply(const Matrix &o) {
     return *result;
 }
 
-Matrix Matrix::transpose() {
+Matrix& Matrix::transpose() {
     for (int i = 0; i < m_rows; i ++ ) {
         for (int j = i + 1; j < m_cols; j ++) {
             // potential for a memory leak here I think
@@ -163,7 +168,7 @@ Matrix& operator*(Matrix &m1, Matrix &m2) {
         throw std::runtime_error("Matrices dimensions must be compatible");
     }
 
-    auto result = std::make_unique<Matrix>(m1.m_rows, m2.m_cols);
+    auto result = new Matrix(m1.m_rows, m2.m_cols);
     for (int i = 0; i < m1.m_rows; i ++) {
         for (int j = 0; j < m2.m_cols; j ++) {
             double sum = 0;
@@ -174,12 +179,13 @@ Matrix& operator*(Matrix &m1, Matrix &m2) {
             (*result)(i, j) = sum;
         }
     }
+    std::cout << *result << std::endl;
     return *result;
 }
 
 double Matrix::trace() {
     if (m_cols != m_rows) {
-        throw new std::string("Matrix must be square to compute trace");
+        throw std::string("Matrix must be square to compute trace");
     }
     double d = 0;
     for (int i = 0; i < m_cols; i ++ ) {
@@ -199,37 +205,39 @@ Matrix& operator*(double d, Matrix &m) {
 }
 
 Matrix& operator/(Matrix &m, double d) {
-    auto result = Matrix(m.m_rows, m.m_cols);
+    auto result = std::make_unique<Matrix>(m.m_rows, m.m_cols);
     for (int i = 0; i < m.m_rows; i ++) {
         for (int j = 0; j < m.m_cols; j ++) {
-            result(i, j) = d / m(i, j);
+            (*result)(i, j) = d / m(i, j);
         }
     }
-    return result;
+    return *result;
 }
 
-std::pair<int, int> Matrix::max() {
-    auto max = std::pair<int, int>(0, 0);
+std::pair<int, int>& Matrix::max() {
+    auto max = std::make_unique<std::pair<int, int>>(0, 0);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < m_cols; j ++) {
-            if (m_data[i][j] > m_data[max.first][max.second]) {
-                max = std::pair<int, int>(i, j);
+            if (m_data[i][j] > m_data[max->first][max->second]) {
+                max->first = i;
+                max->second = j;
             }
         }
     }
-    return max;
+    return *max;
 }
 
-std::pair<int, int> Matrix::min() {
-    auto min = std::pair<int, int>(0, 0);
+std::pair<int, int>& Matrix::min() {
+    auto min = std::make_unique<std::pair<int, int>>(0, 0);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < m_cols; j ++) {
-            if (m_data[i][j] < m_data[min.first][min.second]) {
-                min = std::pair<int, int>(i, j);
+            if (m_data[i][j] < m_data[min->first][min->second]) {
+                min->first = i;
+                min->second = j;
             }
         }
     }
-    return min;
+    return *min;
 }
 
 bool operator==(const Matrix &m1, const Matrix &m2) {
@@ -251,11 +259,11 @@ Matrix& Matrix::operator=(const Matrix &o) {
     if(this == &o)
         return *this;
 
-    this->m_rows = o.m_rows;
-    this->m_cols = o.m_cols;
-    this->m_data = new double*[m_rows];
+    m_rows = o.m_rows;
+    m_cols = o.m_cols;
+    m_data = new Vector[o.m_rows];
     for (int i = 0; i < m_rows; i ++) {
-        this->m_data[i] = new double[m_cols];
+        m_data[i] = Vector(m_cols);
         for (int j = 0; j < m_cols; j ++) {
             this->m_data[i][j] = o.m_data[i][j];
         }

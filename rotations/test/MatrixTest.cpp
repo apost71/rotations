@@ -32,3 +32,43 @@ TEST_CASE("Should perform basic matrix operations", "[matrix]") {
         REQUIRE(e == mT);
     }
 }
+
+TEST_CASE("Should initialize properly", "[matrix]") {
+
+    SECTION("Should be created with zeros") {
+        Matrix m = Matrix(3, 3);
+        for (int i = 0; i < 3; i ++) {
+            for (int j = 0; j < 3; j ++) {
+                REQUIRE(m(i, j) == 0);
+            }
+        }
+    }
+
+    SECTION("Should be mutable") {
+        Matrix m = Matrix(3, 3);
+        m(1, 2) = 5;
+        m(2, 0) = 3;
+
+        REQUIRE(m(1, 2) == 5);
+        REQUIRE(m(2, 0) == 3);
+    }
+
+    SECTION("Should be created with copy constructor") {
+        Matrix m = Matrix(3, 3);
+        Matrix m2 = m;
+        m2(1, 0) = 5;
+
+        REQUIRE(m(1, 0) == 0);
+        REQUIRE(m2(1, 0) == 5);
+    }
+
+    SECTION("Should be created with copy assignment operator") {
+        Matrix m = Matrix(3, 3);
+        Matrix m2;
+        m2 = m;
+        m2(1, 0) = 5;
+
+        REQUIRE(m(1, 0) == 0);
+        REQUIRE(m2(1, 0) == 5);
+    }
+}

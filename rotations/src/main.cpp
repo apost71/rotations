@@ -23,91 +23,92 @@ int main(int argc, const char * argv[]) {
     
     EulerAngle e = EulerAngle(3, 2, 1, 10, 20, -20);
     Matrix result = e.toDCM();
-    EulerAngle e2 = EulerAngle(3, 2, 1, "e2");
-    EulerAngle e3 = *dynamic_cast<EulerAngle*>(e2.fromDCM(result).get());
-    std::cout << *dynamic_cast<EulerAngle*>(e2.fromDCM(result).get()) << std::endl;
-    std::cout << e3 << std::endl;
-    std::cout << e << std::endl;
-
-    EulerAngle t = EulerAngle(3, 2, 1, 20, 30, 10);
-    EulerAngle e4 = *dynamic_cast<EulerAngle*>(e.add(t).get());
-    EulerAngle e5 = *dynamic_cast<EulerAngle*>(e4.subtract(t).get());
-
-    std::cout << "E4: " << e4 << std::endl;
-    std::cout << "E5: " << e5 << std::endl;
-    std::cout << "E: " << e << std::endl;
-
-    std::cout << "-------------------" << std::endl;
-
-    auto m = Matrix(3, 3);
-    std::cout << m << std::endl;
-
-    for (int i = 0; i < m.getRows(); i++) {
-        for (int j = 0; j < m.getColumns(); j ++) {
-            m(i, j) = (i*m.getColumns() + j + 1);
-        }
-    }
-
-    std::cout << m << std::endl;
-    Matrix test = 2. * m;
-
-    std::cout << test << std::endl;
-
-    Matrix m2 = Matrix(3, 3);
-    m2(0, 0) = 2;
-    m2(0, 1) = 3;
-    m2(0, 2) = 4;
-    m2(1, 0) = 3;
-    m2(1, 1) = 4;
-    m2(1, 2) = 5;
-    m2(2, 0) = 4;
-    m2(2, 1) = 5;
-    m2(2, 2) = 6;
-
-    Matrix test2 = m * m2;
-
-    std::cout << test2 << std::endl;
-
-    Matrix m3 = Matrix(3, 1);
-    m3(0, 0) = 1;
-    m3(1, 0) = 2;
-    m3(2, 0) = 3;
-
-    Matrix m4 = m * m3;
-
-    std::cout << m4 << std::endl;
-
-    std::cout << m << std::endl;
-    std::cout << m.det() << std::endl;
-
-//    m1 = np.array([
-//    [1, 2, 10, 4],
-//    [4, 5, 6, 7],
-//    [7, 8, 9, 10],
-//    [10, 9, 1, 11]
-//    ])
-
-    Matrix m6 = Matrix(4, 4);
-    m6(0, 0) = 1;
-    m6(0, 1) = 2;
-    m6(0, 2) = 10;
-    m6(0, 3) = 4;
-    m6(1, 0) = 4;
-    m6(1, 1) = 5;
-    m6(1, 2) = 6;
-    m6(1, 3) = 7;
-    m6(2, 0) = 7;
-    m6(2, 1) = 8;
-    m6(2, 2) = 9;
-    m6(2, 3) = 10;
-    m6(3, 0) = 10;
-    m6(3, 1) = 9;
-    m6(3, 2) = 1;
-    m6(3, 3) = 11;
-
-    std::cout << "Starting...\n\n" << std::endl;
-    std::cout << m6 << std::endl;
-    std::cout << m6.det() << std::endl;
+    std::cout << result << std::endl;
+//    EulerAngle e2 = EulerAngle(3, 2, 1, "e2");
+//    EulerAngle e3 = *dynamic_cast<EulerAngle*>(e2.fromDCM(result).get());
+//    std::cout << *dynamic_cast<EulerAngle*>(e2.fromDCM(result).get()) << std::endl;
+//    std::cout << e3 << std::endl;
+//    std::cout << e << std::endl;
+//
+//    EulerAngle t = EulerAngle(3, 2, 1, 20, 30, 10);
+//    EulerAngle e4 = *dynamic_cast<EulerAngle*>(e.add(t).get());
+//    EulerAngle e5 = *dynamic_cast<EulerAngle*>(e4.subtract(t).get());
+//
+//    std::cout << "E4: " << e4 << std::endl;
+//    std::cout << "E5: " << e5 << std::endl;
+//    std::cout << "E: " << e << std::endl;
+//
+//    std::cout << "-------------------" << std::endl;
+//
+//    auto m = Matrix(3, 3);
+//    std::cout << m << std::endl;
+//
+//    for (int i = 0; i < m.getRows(); i++) {
+//        for (int j = 0; j < m.getColumns(); j ++) {
+//            m(i, j) = (i*m.getColumns() + j + 1);
+//        }
+//    }
+//
+//    std::cout << m << std::endl;
+//    Matrix test = 2. * m;
+//
+//    std::cout << test << std::endl;
+//
+//    Matrix m2 = Matrix(3, 3);
+//    m2(0, 0) = 2;
+//    m2(0, 1) = 3;
+//    m2(0, 2) = 4;
+//    m2(1, 0) = 3;
+//    m2(1, 1) = 4;
+//    m2(1, 2) = 5;
+//    m2(2, 0) = 4;
+//    m2(2, 1) = 5;
+//    m2(2, 2) = 6;
+//
+//    Matrix test2 = m * m2;
+//
+//    std::cout << test2 << std::endl;
+//
+//    Matrix m3 = Matrix(3, 1);
+//    m3(0, 0) = 1;
+//    m3(1, 0) = 2;
+//    m3(2, 0) = 3;
+//
+//    Matrix m4 = m * m3;
+//
+//    std::cout << m4 << std::endl;
+//
+//    std::cout << m << std::endl;
+//    std::cout << m.det() << std::endl;
+//
+////    m1 = np.array([
+////    [1, 2, 10, 4],
+////    [4, 5, 6, 7],
+////    [7, 8, 9, 10],
+////    [10, 9, 1, 11]
+////    ])
+//
+//    Matrix m6 = Matrix(4, 4);
+//    m6(0, 0) = 1;
+//    m6(0, 1) = 2;
+//    m6(0, 2) = 10;
+//    m6(0, 3) = 4;
+//    m6(1, 0) = 4;
+//    m6(1, 1) = 5;
+//    m6(1, 2) = 6;
+//    m6(1, 3) = 7;
+//    m6(2, 0) = 7;
+//    m6(2, 1) = 8;
+//    m6(2, 2) = 9;
+//    m6(2, 3) = 10;
+//    m6(3, 0) = 10;
+//    m6(3, 1) = 9;
+//    m6(3, 2) = 1;
+//    m6(3, 3) = 11;
+//
+//    std::cout << "Starting...\n\n" << std::endl;
+//    std::cout << m6 << std::endl;
+//    std::cout << m6.det() << std::endl;
 
 //    std::cout << m << std::endl;
 //
