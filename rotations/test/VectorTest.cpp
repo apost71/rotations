@@ -60,14 +60,24 @@ TEST_CASE("Should perform vector operations") {
         Vector v = Vector({1, 2, 3});
         REQUIRE(v.norm() == 3.7416573867739413);
     }
-}
-
-TEST_CASE("Should normalize") {
 
     SECTION("Should normalize large numbers") {
         Vector v = Vector({20, 40, 60});
         v.normalize();
-        Vector result = Vector({0.267261, 0.534522, 0.801784});
+        Vector result = Vector({0.2672612419124244, 0.53452248382484879, 0.80178372573727308});
         REQUIRE(v == result);
     }
+
+    SECTION("Should compute the cross product") {
+        Vector v1 = Vector({2, 3, 4});
+        Vector v2 = Vector({5, 6, 7});
+        Vector v3 = v1.cross(v2);
+
+        std::cout << v3 << std::endl;
+        Vector expected = Vector({-3, 6, -3});
+
+        REQUIRE(v3 == expected);
+    }
 }
+
+

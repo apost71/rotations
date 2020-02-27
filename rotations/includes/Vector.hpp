@@ -25,9 +25,15 @@ public:
     double& operator[](int i);
     double norm();
     void normalize();
+    double dot(Vector &v);
+    Vector cross(Vector &v);
 
     friend bool operator==(const Vector &lhs, const Vector &rhs);
     friend std::ostream& operator<<(std::ostream &os, Vector &v);
+    friend Vector& operator*(double d, Vector &v);
+    friend Vector& operator+(Vector &v1, Vector &v2);
+    friend Vector& operator-(Vector &v1, Vector &v2);
+
 
 };
 

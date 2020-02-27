@@ -66,7 +66,6 @@ bool operator==(const Vector &lhs, const Vector &rhs) {
     if (lhs.length != rhs.length) {
         return false;
     }
-
     for (int i = 0; i < lhs.length; i ++ ){
         if (abs(lhs.m_data[i] - rhs.m_data[i]) >= std::numeric_limits<double>::epsilon()) {
             return false;
@@ -89,5 +88,58 @@ std::ostream &operator<<(std::ostream &os, Vector &v) {
     }
     os << v[v.getLength() - 1] << "]";
     return os;
+}
+
+double Vector::dot(Vector &v) {
+    assert(this->length == v.length);
+
+    double sum = 0;
+    for (int i = 0; i < this->length; i++) {
+        sum += (*this)[i] * v[i];
+    }
+    return sum;
+}
+
+Vector &operator*(double d, Vector &v) {
+    auto result = new Vector(v.length);
+
+    for (int i = 0; i < v.length; i ++) {
+        (*result)[i] = d * v[i];
+    }
+
+    return *result;
+}
+
+Vector &operator+(Vector &v1, Vector &v2) {
+    assert(v1.length == v2.length);
+    auto result = new Vector(v1.length);
+
+    for (int i = 0; i < v1.length; i ++) {
+        (*result)[i] = v1[i] + v2[i];
+    }
+    return *result;
+}
+
+Vector Vector::cross(Vector &v) {
+    if (this->length != 3 || v.length != 3) {
+        throw std::string("Unimplemented exception");
+    }
+    auto result = new Vector(v.length);
+
+    (*result)[0] = (*this)[1] * v[2] - (*this)[2] * v[1];
+    (*result)[1] = (*this)[2] * v[0] - (*this)[0] * v[2];
+    (*result)[2] = (*this)[0] * v[1] - (*this)[1] * v[0];
+
+    return *result;
+}
+
+Vector &operator-(Vector &v1, Vector &v2) {
+    assert(v1.length == v2.length);
+    auto result = new Vector(v1.length);
+
+    for (int i = 0; i < v1.length; i ++) {
+        (*result)[i] = v1[i] - v2[i];
+    }
+    return *result;
 }
 

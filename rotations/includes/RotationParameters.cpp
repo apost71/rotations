@@ -18,9 +18,7 @@ RotationParameters::RotationParameters(const RotationParameters &o){
 }
 
 RotationParameters::~RotationParameters() {
-    if (this->m_dcm) {
         delete m_dcm;
-    }
 }
 
 
@@ -53,7 +51,7 @@ std::unique_ptr<RotationParameters> RotationParameters::add(RotationParameters &
         *m_dcm = toDCM();
     }
     Matrix other = o.toDCM();
-    Matrix dcm = *m_dcm * other;
+    Matrix dcm = other * *m_dcm;
     return fromDCM(dcm);
 }
 
@@ -62,6 +60,14 @@ std::unique_ptr<RotationParameters> RotationParameters::subtract(RotationParamet
         *m_dcm = toDCM();
     }
     Matrix other = o.toDCM().transpose();
-    Matrix dcm = *m_dcm * other;
+    Matrix dcm = other * *m_dcm;
     return fromDCM(dcm);
+}
+
+RotationParameters& RotationParameters::kde() {
+    return *this;
+}
+
+std::string RotationParameters::getName() {
+    return m_name;
 }

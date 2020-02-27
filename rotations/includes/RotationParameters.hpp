@@ -31,6 +31,8 @@ public:
     Matrix addDCM(RotationParameters &o);
     
     Matrix subtractDCM(RotationParameters &o);
+
+    std::string getName();
     
     virtual std::unique_ptr<RotationParameters> add(RotationParameters &o);
     
@@ -43,10 +45,16 @@ public:
     virtual void printRadians() = 0;
     
     virtual void printDegrees() = 0;
-    
+
+    virtual RotationParameters& kde();
 };
 
 double degreeToRadians(double d);
 double radianToDegrees(double d);
+
+template<typename Base, typename T>
+inline bool instanceof(const T*) {
+    return std::is_base_of<Base, T>::value;
+}
 
 #endif /* RotationParameters_hpp */

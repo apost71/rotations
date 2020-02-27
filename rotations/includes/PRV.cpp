@@ -9,7 +9,7 @@
 #include "PRV.hpp"
 #include "Matrix.hpp"
 #include "RotationParameters.hpp"
-#include <math.h>
+#include <cmath>
 #include <iostream>
 
 #define _USE_MATH_DEFINES
@@ -20,6 +20,7 @@ PRV::PRV(){}
 // phi and E_v should be in radians
 PRV::PRV(double phi, Vector &Ev){
     this->m_Ev = &Ev;
+    this->m_Ev->normalize();
     m_phi = degreeToRadians(phi);
     m_name = "PRV";
 }
@@ -31,6 +32,7 @@ PRV::PRV(double phi, const std::initializer_list<double> &list) {
     (*this->m_Ev)[1] = degreeToRadians((*this->m_Ev)[1]);
     (*this->m_Ev)[2] = degreeToRadians((*this->m_Ev)[2]);
     this->m_Ev->normalize();
+    this->m_name = "PRV";
 }
 
 PRV::PRV(const PRV &o) {
@@ -40,6 +42,7 @@ PRV::PRV(const PRV &o) {
         (*this->m_Ev)[i] = (*o.m_Ev)[i];
     }
     this->m_Ev->normalize();
+    this->m_name = "PRV";
 }
 
 PRV::~PRV() {}
@@ -53,23 +56,50 @@ PRV& PRV::operator=(const PRV &o) {
         (*this->m_Ev)[i] = (*o.m_Ev)[i];
     }
     this->m_Ev->normalize();
+    this->m_name = "PRV";
     return *this;
 }
 
 std::unique_ptr<RotationParameters> PRV::add(RotationParameters &o){
-    if (! m_dcm) {
-        *m_dcm = toDCM();
+    if (o.getName() == "PRV") {
+        PRV p = *dynamic_cast<PRV*>(&o);
+        auto v = p.m_Ev;
+        double phi = 2 * acos(cos(this->m_phi/2)*cos(p.m_phi/2) - (sin(this->m_phi/2)*sin(p.m_phi/2) * *this->m_Ev).dot(*p.m_Ev));
+        Vector tmp = (sin(this->m_phi/2)*sin(p.m_phi/2)* *this->m_Ev).cross(*v);
+        Vector num = cos(p.m_phi/2)*sin(this->m_phi/2) * *this->m_Ev + cos(this->m_phi/2)*sin(p.m_phi/2) * *p.m_Ev + tmp;
+        double den = 1/(sin(phi/2));
+        Vector& Ev = den * num;
+        return std::make_unique<PRV>(radianToDegrees(phi), Ev);
+    } else {
+        if (!m_dcm) {
+            *m_dcm = toDCM();
+        }
+        Matrix other = o.toDCM();
+        Matrix dcm = other * *m_dcm;
+        return fromDCM(dcm);
     }
-    Matrix dcm = m_dcm->multiply(o.toDCM());
-    return fromDCM(dcm);
 }
 
 std::unique_ptr<RotationParameters> PRV::subtract(RotationParameters &o) {
-    if (! m_dcm) {
-        *m_dcm = toDCM();
+    if (o.getName() == "PRV") {
+        PRV p = *dynamic_cast<PRV*>(&o);
+        auto v = p.m_Ev;
+        double phi = 2 * acos(cos(this->m_phi/2)*cos(p.m_phi/2) + (sin(this->m_phi/2)*sin(p.m_phi/2) * *this->m_Ev).dot(*p.m_Ev));
+        Vector tmp = (sin(this->m_phi/2)*sin(p.m_phi/2)* *this->m_Ev).cross(*v);
+        Vector num = cos(p.m_phi/2)*sin(this->m_phi/2) * *this->m_Ev - cos(this->m_phi/2)*sin(p.m_phi/2) * *p.m_Ev + tmp;
+        double den = 1/(sin(phi/2));
+        Vector& Ev = den * num;
+        std::cout << Ev << std::endl;
+        std::cout << *new PRV(radianToDegrees(phi), Ev) << std::endl;
+        return std::make_unique<PRV>(radianToDegrees(phi), Ev);
+    } else {
+        if (!m_dcm) {
+            *m_dcm = toDCM();
+        }
+        Matrix other = o.toDCM().transpose();
+        Matrix dcm = *m_dcm * other;
+        return fromDCM(dcm);
     }
-    Matrix dcm = *m_dcm * o.toDCM().transpose();
-    return fromDCM(dcm);
 }
 
 Matrix PRV::toDCM() {
@@ -130,6 +160,6 @@ std::ostream &operator<<(std::ostream &os, PRV &prv){
 }
 
 bool operator==(const PRV &lhs, const PRV &rhs) {
-    return abs(lhs.m_phi - rhs.m_phi) < std::numeric_limits<double>::epsilon() &&
+    return abs(lhs.m_phi - rhs.m_phi) <= std::numeric_limits<double>::epsilon() &&
            *lhs.m_Ev == *rhs.m_Ev;
 }
