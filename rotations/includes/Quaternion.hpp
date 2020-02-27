@@ -12,15 +12,15 @@
 
 class Quaternion: public RotationParameters {
 private:
-    Matrix m_b = Matrix(4, 1);
+    Vector* m_b;
 public:
     Quaternion() : Quaternion(0., 0., 0., 0.) {};
-
     Quaternion(double b0, double b1, double b2, double b3);
-
+    Quaternion(Vector &v);
+    Quaternion(std::initializer_list<double> &list);
     Quaternion(const Quaternion &o);
-
-    ~Quaternion() = default;
+    ~Quaternion() override;
+    Quaternion& operator=(const Quaternion &o);
 
     std::unique_ptr<RotationParameters> add(RotationParameters &o) override;
 
@@ -36,11 +36,9 @@ public:
 
     static Quaternion& fromPRV(PRV &p);
 
-    friend std::ostream& operator>>(std::ostream& os, Quaternion &q);
+    friend std::ostream& operator<<(std::ostream& os, Quaternion &q);
+    friend bool operator==(const Quaternion &q1, const Quaternion &q2);
 
-    void normalize();
-
-    double length();
 };
 
 class ShepperdMethod {
@@ -59,24 +57,24 @@ private:
                     1, {
                                {0, [](Matrix *C, double d) { return (((*C)(1, 2) - (*C)(2, 1)) / 4) / d; }},
                                {1, [](Matrix *C, double d) { return d; }},
-                               {2, [](Matrix *C, double d) { return (((*C)(0, 1) - (*C)(1, 0)) / 4) / d; }},
-                               {3, [](Matrix *C, double d) { return (((*C)(2, 0) - (*C)(0, 2)) / 4) / d; }},
+                               {2, [](Matrix *C, double d) { return (((*C)(0, 1) + (*C)(1, 0)) / 4) / d; }},
+                               {3, [](Matrix *C, double d) { return (((*C)(2, 0) + (*C)(0, 2)) / 4) / d; }},
                        }
             },
             {
                     2, {
                                {0, [](Matrix *C, double d) { return (((*C)(2, 0) - (*C)(0, 2)) / 4) / d; }},
-                               {1, [](Matrix *C, double d) { return (((*C)(0, 1) - (*C)(1, 0)) / 4) / d; }},
+                               {1, [](Matrix *C, double d) { return (((*C)(0, 1) + (*C)(1, 0)) / 4) / d; }},
                                {2, [](Matrix *C, double d) { return d; }},
-                               {3, [](Matrix *C, double d) { return (((*C)(1, 2) - (*C)(2, 1)) / 4) / d; }},
+                               {3, [](Matrix *C, double d) { return (((*C)(1, 2) + (*C)(2, 1)) / 4) / d; }},
                        }
             },
             {
                     3, {
                                {0, [](Matrix *C, double d) { return (((*C)(0, 1) - (*C)(1, 0)) / 4) / d; }},
-                               {1, [](Matrix *C, double d) { return (((*C)(2, 0) - (*C)(0, 2)) / 4) / d; }},
-                               {2, [](Matrix *C, double d) { return (((*C)(1, 2) - (*C)(2, 1)) / 4) / d; }},
-                               {3, [](Matrix *C, double d) { return sqrt(d); }},
+                               {1, [](Matrix *C, double d) { return (((*C)(2, 0) + (*C)(0, 2)) / 4) / d; }},
+                               {2, [](Matrix *C, double d) { return (((*C)(1, 2) + (*C)(2, 1)) / 4) / d; }},
+                               {3, [](Matrix *C, double d) { return d; }},
                        }
             }
     };
@@ -86,8 +84,8 @@ public:
     ShepperdMethod(const ShepperdMethod &o);
     ~ShepperdMethod();
 
-    Matrix solve();
-    Matrix bSquares();
+    Vector& solve();
+    Vector bSquares();
 
 };
 #endif //ROTATIONS_QUATERNION_HPP

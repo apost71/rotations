@@ -89,8 +89,6 @@ std::unique_ptr<RotationParameters> PRV::subtract(RotationParameters &o) {
         Vector num = cos(p.m_phi/2)*sin(this->m_phi/2) * *this->m_Ev - cos(this->m_phi/2)*sin(p.m_phi/2) * *p.m_Ev + tmp;
         double den = 1/(sin(phi/2));
         Vector& Ev = den * num;
-        std::cout << Ev << std::endl;
-        std::cout << *new PRV(radianToDegrees(phi), Ev) << std::endl;
         return std::make_unique<PRV>(radianToDegrees(phi), Ev);
     } else {
         if (!m_dcm) {
@@ -146,7 +144,7 @@ double PRV::getPhi() {
     return m_phi;
 }
 
-Matrix PRV::getEv() {
+Vector PRV::getEv() {
     return *m_Ev;
 }
 

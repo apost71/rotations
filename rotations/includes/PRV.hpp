@@ -39,7 +39,7 @@ public:
 
     double getPhi();
 
-    Matrix getEv();
+    Vector getEv();
 
     friend std::ostream& operator<<(std::ostream &os, PRV &prv);
 

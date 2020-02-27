@@ -7,14 +7,37 @@
 
 
 Quaternion::Quaternion(double b0, double b1, double b2, double b3) {
-    m_b(0, 0) = b0;
-    m_b(1, 0) = b1;
-    m_b(2, 0) = b2;
-    m_b(3, 0) = b3;
+    this->m_b = new Vector({b0, b1, b2, b3});
 }
 
 Quaternion::Quaternion(const Quaternion &o) {
-    m_b = o.m_b;
+    this->m_b = new Vector(o.m_b->getLength());
+    for (int i = 0 ; i < o.m_b->getLength(); i ++) {
+        (*this->m_b)[i] = (*o.m_b)[i];
+    }
+}
+
+Quaternion::Quaternion(Vector &v) {
+    this->m_b = new Vector(v.getLength());
+    for (int i = 0; i < v.getLength(); i ++) {
+        (*this->m_b)[i] = v[i];
+    }
+}
+
+Quaternion::Quaternion(std::initializer_list<double> &list) {
+    this->m_b = new Vector(list);
+}
+
+Quaternion::~Quaternion() {
+    delete this->m_b;
+}
+
+Quaternion &Quaternion::operator=(const Quaternion &o) {
+    this->m_b = new Vector(o.m_b->getLength());
+    for (int i = 0; i < o.m_b->getLength(); i++) {
+        (*this->m_b)[i] = (*o.m_b)[i];
+    }
+    return *this;
 }
 
 std::unique_ptr<RotationParameters> Quaternion::add(RotationParameters &o) {
@@ -27,24 +50,31 @@ std::unique_ptr<RotationParameters> Quaternion::subtract(RotationParameters &o) 
 
 Matrix Quaternion::toDCM() {
     if (! m_dcm ) {
-        m_dcm = new Matrix(3, 3);
-        (*m_dcm)(0, 0) = pow(m_b(0, 0), 2) + pow(m_b(1, 0), 2) - pow(m_b(2, 0), 2) - pow(m_b(3, 0), 2);
-        (*m_dcm)(0, 1) = 2 * (m_b(1, 0) * m_b(2, 0) + m_b(0, 0) * m_b(2, 0));
-        (*m_dcm)(0, 2) = 2 * (m_b(1, 0) * m_b(3, 0) - m_b(0, 0) * m_b(2, 0));
-        (*m_dcm)(1, 0) = 2 * (m_b(1, 0) * m_b(2, 0) - m_b(0, 0) * m_b(3, 0));
-        (*m_dcm)(1, 1) = pow(m_b(0, 0), 2) - pow(m_b(1, 0), 2) + pow(m_b(2, 0), 2) - pow(m_b(3, 0), 2);
-        (*m_dcm)(1, 2) = 2 * (m_b(2, 0) * m_b(3, 0) + m_b(0, 0) * m_b(1, 0));
-        (*m_dcm)(2, 0) = 2 * (m_b(1, 0) * m_b(3, 0) + m_b(0, 0) * m_b(2, 0));
-        (*m_dcm)(2, 1) = 2 * (m_b(2, 0) * m_b(3, 0) - m_b(0, 0) * m_b(1, 0));
-        (*m_dcm)(1, 1) = pow(m_b(0, 0), 2) - pow(m_b(1, 0), 2) - pow(m_b(2, 0), 2) + pow(m_b(3, 0), 2);
+        this->m_dcm = new Matrix({
+             {
+                     pow((*m_b)[0], 2) + pow((*m_b)[1], 2) - pow((*m_b)[2], 2) - pow((*m_b)[3], 2),
+                     2 * ((*m_b)[1] * (*m_b)[2] + (*m_b)[0] * (*m_b)[3]),
+                     2 * ((*m_b)[1] * (*m_b)[3] - (*m_b)[0] * (*m_b)[2])
+             },
+             {
+                     2 * ((*m_b)[1] * (*m_b)[2] - (*m_b)[0] * (*m_b)[3]),
+                     pow((*m_b)[0], 2) - pow((*m_b)[1], 2) + pow((*m_b)[2], 2) - pow((*m_b)[3], 2),
+                     2 * ((*m_b)[2] * (*m_b)[3] + (*m_b)[0] * (*m_b)[1])
+             },
+             {
+                     2 * ((*m_b)[1] * (*m_b)[3] + (*m_b)[0] * (*m_b)[2]),
+                     2 * ((*m_b)[2] * (*m_b)[3] - (*m_b)[0] * (*m_b)[1]),
+                     pow((*m_b)[0], 2) - pow((*m_b)[1], 2) - pow((*m_b)[2], 2) + pow((*m_b)[3], 2)
+             }
+        });
     }
     return *m_dcm;
 }
 
 std::unique_ptr<RotationParameters> Quaternion::fromDCM(Matrix &dcm) {
     auto solver = ShepperdMethod(dcm);
-    Matrix b = solver.solve();
-    return std::make_unique<Quaternion>(b(0, 0), b(1, 0), b(2, 0), b(3, 0));
+    Vector& b = solver.solve();
+    return std::make_unique<Quaternion>(b);
 }
 
 void Quaternion::printRadians() {
@@ -55,49 +85,43 @@ void Quaternion::printDegrees() {
     return;
 }
 
-void Quaternion::normalize(){
-    m_b = m_b / length();
-}
-
-double Quaternion::length() {
-    return m_b(0, 0) + m_b(1, 0) + m_b(2, 0) + m_b(3, 0);
-}
-
 Quaternion& Quaternion::fromPRV(PRV &p) {
     double b0 = cos(p.getPhi()/2);
-    Matrix tmp = p.getEv();
-    Matrix e = sin(p.getPhi()/2) * tmp;
-    return *new Quaternion(b0, e(0, 0), e(1, 0), e(2, 0));
+    Vector tmp = p.getEv();
+    Vector e = sin(p.getPhi()/2) * tmp;
+    return *new Quaternion(b0, e[0], e[1], e[2]);
 }
 
-std::ostream& operator>>(std::ostream& os, Quaternion &q) {
-    os << "B_0: " << q.m_b(0, 0) << " B_1: " << q.m_b(1, 0) << " B_2: " << q.m_b(2, 0) << " B_3: " << q.m_b(3, 0);
+std::ostream& operator<<(std::ostream& os, Quaternion &q) {
+    os << "B_0: " << (*q.m_b)[0] << " B_1: " << (*q.m_b)[1] << " B_2: " << (*q.m_b)[2] << " B_3: " << (*q.m_b)[3];
     return os;
 }
 
-Matrix ShepperdMethod::solve() {
-    Matrix b_squares = bSquares();
-    Matrix result = Matrix(4, 1);
-    auto max = b_squares.max();
-    for (int i = 0; i < result.getRows(); i ++) {
-        result(i, 0) = m_bFunctions[max.first][i](m_C, sqrt(b_squares(max.first, max.second)));
+bool operator==(const Quaternion &q1, const Quaternion &q2) {
+    return *q1.m_b == *q2.m_b;
+}
+
+Vector& ShepperdMethod::solve() {
+    Vector b_squares = bSquares();
+    auto result = new Vector(4);
+    auto max = b_squares.maxIndex();
+    for (int i = 0; i < result->getLength(); i ++) {
+        (*result)[i] = m_bFunctions[max][i](m_C, sqrt(b_squares[max]));
     }
-    return result;
+    return *result;
 }
 
 ShepperdMethod::ShepperdMethod(const ShepperdMethod &o) {
     this->m_C = o.m_C;
 }
 
-ShepperdMethod::~ShepperdMethod() {
-    delete m_C;
-}
+ShepperdMethod::~ShepperdMethod() {}
 
-Matrix ShepperdMethod::bSquares() {
-    auto b_squares = Matrix(4, 1);
-    b_squares(0, 0) = 0.25 * (1 + m_C->trace());
-    b_squares(1, 0) = 0.25 * (1 + 2*(*m_C)(0, 0) - m_C->trace());
-    b_squares(2, 0) = 0.25 * (1 + 2*(*m_C)(1, 1) - m_C->trace());
-    b_squares(3, 0) = 0.25 * (1 + 2*(*m_C)(2, 2) - m_C->trace());
+Vector ShepperdMethod::bSquares() {
+    auto b_squares = Vector(4);
+    b_squares[0] = 0.25 * (1 + m_C->trace());
+    b_squares[1] = 0.25 * (1 + 2*(*m_C)(0, 0) - m_C->trace());
+    b_squares[2] = 0.25 * (1 + 2*(*m_C)(1, 1) - m_C->trace());
+    b_squares[3] = 0.25 * (1 + 2*(*m_C)(2, 2) - m_C->trace());
     return b_squares;
 }

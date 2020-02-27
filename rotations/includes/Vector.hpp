@@ -27,6 +27,8 @@ public:
     void normalize();
     double dot(Vector &v);
     Vector cross(Vector &v);
+    int maxIndex();
+    double maxValue();
 
     friend bool operator==(const Vector &lhs, const Vector &rhs);
     friend std::ostream& operator<<(std::ostream &os, Vector &v);

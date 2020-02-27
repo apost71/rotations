@@ -143,3 +143,23 @@ Vector &operator-(Vector &v1, Vector &v2) {
     return *result;
 }
 
+int Vector::maxIndex() {
+    int maxIndex = 0;
+    for (int i = 0; i < this->length; i ++) {
+        if ((*this)[i] > (*this)[maxIndex]) {
+            maxIndex = i;
+        }
+    }
+    return maxIndex;
+}
+
+double Vector::maxValue() {
+    double maxValue = (*this)[0];
+    for (int i = 0; i < this->length; i ++) {
+        if ((*this)[i] > maxValue) {
+            maxValue = i;
+        }
+    }
+    return maxValue;
+}
+

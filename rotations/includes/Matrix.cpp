@@ -231,6 +231,7 @@ Matrix& operator/(Matrix &m, double d) {
 
 std::pair<int, int>& Matrix::max() {
     auto max = std::make_unique<std::pair<int, int>>(0, 0);
+    std::cout << *this << std::endl;
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < m_cols; j ++) {
             if (m_data[i][j] > m_data[max->first][max->second]) {
