@@ -22,6 +22,12 @@ public:
     ~Quaternion() override;
     Quaternion& operator=(const Quaternion &o);
 
+    Matrix B();
+
+    Vector& getBVector();
+
+    Quaternion integrate(const std::function<Matrix(double)> &w, double duration, double step);
+
     std::unique_ptr<RotationParameters> add(RotationParameters &o) override;
 
     std::unique_ptr<RotationParameters> subtract(RotationParameters &o) override;

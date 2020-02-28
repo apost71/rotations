@@ -64,10 +64,6 @@ std::unique_ptr<RotationParameters> RotationParameters::subtract(RotationParamet
     return fromDCM(dcm);
 }
 
-RotationParameters& RotationParameters::kde() {
-    return *this;
-}
-
 std::string RotationParameters::getName() {
     return m_name;
 }

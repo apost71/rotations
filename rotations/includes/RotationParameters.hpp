@@ -45,8 +45,6 @@ public:
     virtual void printRadians() = 0;
     
     virtual void printDegrees() = 0;
-
-    virtual RotationParameters& kde();
 };
 
 double degreeToRadians(double d);

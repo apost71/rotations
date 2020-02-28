@@ -72,4 +72,39 @@ TEST_CASE( "Quaternion should perform basic operations", "[quaternion]") {
 
         REQUIRE(r == q);
     }
+
+    SECTION("Should add and subtract properly") {
+        EulerAngle e2 = EulerAngle(3, 2, 1, 5, 20, 10);
+        PRV p2 = PRV();
+        Matrix m2 = e.toDCM();
+        p2 = *dynamic_cast<PRV *>(p2.fromDCM(m2).get());
+        Quaternion q2 = Quaternion::fromPRV(p2);
+        Quaternion q3 = *dynamic_cast<Quaternion*>(q.add(q2).get());
+        Quaternion q4 = *dynamic_cast<Quaternion*>(q3.subtract(q2).get());
+
+        REQUIRE(q == q4);
+    }
+
+    SECTION("Should integrate properly") {
+        Quaternion q1(0.408248, 0., 0.408248, 0.816497);
+
+        Quaternion q2 = q1.integrate(
+                [](double t) {
+                    double c = degreeToRadians(20);
+                    Matrix m({
+                       {0.},
+                       {c*sin(0.1*t)},
+                       {c*0.01},
+                       {c*cos(0.1*t)}
+                    });
+                    return m;
+                }, 42, 0.001);
+
+        std::cout << q2 << std::endl;
+        Vector result({q2.getBVector()[1], q2.getBVector()[2], q2.getBVector()[3]});
+        double norm = result.norm();
+        std::cout << norm << std::endl;
+
+        REQUIRE(norm == 0.82009620132554206);
+    }
 }

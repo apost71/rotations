@@ -77,7 +77,7 @@ Matrix::~Matrix() {
     delete [] m_data;
 }
 
-Matrix& Matrix::multiply(const Matrix &o) {
+Matrix Matrix::multiply(const Matrix &o) {
     auto result = new Matrix(m_rows, o.m_cols);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < o.m_cols; j ++) {
@@ -91,7 +91,7 @@ Matrix& Matrix::multiply(const Matrix &o) {
     return *result;
 }
 
-Matrix& Matrix::transpose() {
+Matrix Matrix::transpose() {
     for (int i = 0; i < m_rows; i ++ ) {
         for (int j = i + 1; j < m_cols; j ++) {
             // potential for a memory leak here I think
@@ -191,7 +191,6 @@ Matrix& operator*(Matrix &m1, Matrix &m2) {
             for (int k = 0; k < m1.m_cols; k ++) {
                 sum += m1.m_data[i][k] * m2.m_data[k][j];
             }
-
             (*result)(i, j) = sum;
         }
     }
@@ -210,7 +209,7 @@ double Matrix::trace() {
 }
 
 Matrix& operator*(double d, Matrix &m) {
-    auto result = std::make_unique<Matrix>(m.m_rows, m.m_cols);
+    auto result = new Matrix(m.m_rows, m.m_cols);
     for (int i = 0; i < m.m_rows; i++) {
         for (int j = 0; j < m.m_cols; j++) {
             (*result)(i, j) = d * m(i, j);

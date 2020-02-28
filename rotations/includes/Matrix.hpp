@@ -28,8 +28,8 @@ public:
     Matrix(const Matrix &o);
     ~Matrix();
     
-    Matrix& multiply(const Matrix &o);
-    Matrix& transpose() ;
+    Matrix multiply(const Matrix &o);
+    Matrix transpose() ;
     [[nodiscard]] int getRows() const;
     [[nodiscard]] int getColumns() const;
     void insert(int row, int column, double value);

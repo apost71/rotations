@@ -101,6 +101,44 @@ bool operator==(const Quaternion &q1, const Quaternion &q2) {
     return *q1.m_b == *q2.m_b;
 }
 
+Matrix Quaternion::B() {
+    return Matrix({
+            {
+               (*m_b)[0], -(*m_b)[1], -(*m_b)[2], -(*m_b)[3]
+            },
+            {
+                (*m_b)[1], (*m_b)[0], -(*m_b)[3], (*m_b)[2]
+            },
+            {
+                (*m_b)[2], (*m_b)[3], (*m_b)[0], -(*m_b)[1]
+            },
+            {
+                (*m_b)[3], -(*m_b)[2], (*m_b)[1], (*m_b)[0]
+            }
+    });
+}
+
+Quaternion Quaternion::integrate(const std::function<Matrix(double)> &w, double duration, double step){
+    Quaternion result(*this);
+    for (double i = 0; i <= duration; i += step) {
+        Matrix Wn = result.B();
+        Matrix Xi = w(i);
+        Matrix tmp = Wn * Xi;
+        Matrix Bi = 0.5 * tmp;
+        std::cout << Bi << std::endl;
+        result.getBVector()[0] = result.getBVector()[0] + step * Bi(0, 0);
+        result.getBVector()[1] = result.getBVector()[1] + step * Bi(1, 0);
+        result.getBVector()[2] = result.getBVector()[2] + step * Bi(2, 0);
+        result.getBVector()[3] = result.getBVector()[3] + step * Bi(3, 0);
+        result.getBVector().normalize();
+    }
+    return result;
+}
+
+Vector& Quaternion::getBVector() {
+    return *m_b;
+}
+
 Vector& ShepperdMethod::solve() {
     Vector b_squares = bSquares();
     auto result = new Vector(4);
