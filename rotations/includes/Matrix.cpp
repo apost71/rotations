@@ -181,7 +181,7 @@ std::ostream& operator<<(std::ostream& os, Matrix &m){
 
 Matrix operator*(Matrix &m1, Matrix &m2) {
     if (m2.m_rows != m1.m_cols) {
-        throw std::runtime_error("Matrices dimensions must be compatible");
+        throw std::runtime_error("Matrix dimensions must be compatible");
     }
 
     auto result = Matrix(m1.m_rows, m2.m_cols);

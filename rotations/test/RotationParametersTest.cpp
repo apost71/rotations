@@ -128,4 +128,19 @@ TEST_CASE( "CRP should perform basic operations", "[quaternion]") {
         REQUIRE(c == c4);
     }
 
+    SECTION("Should integrate properly") {
+        CRP initial({0.4, 0.2, -0.1});
+        CRP result = initial.integrate(
+                [](double t) {
+                    double c = degreeToRadians(3);
+                    Matrix m({
+                                     {c*sin(0.1*t)},
+                                     {c*0.01},
+                                     {c*cos(0.1*t)}
+                             });
+                    return m;
+                }, 42, 0.001);
+        REQUIRE(result.getQVector().norm() == 1.1996198204022048);
+    }
+
 }

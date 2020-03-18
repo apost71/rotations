@@ -24,6 +24,7 @@ CRP::CRP(const std::initializer_list<double> &list) {
 }
 
 CRP::CRP(const CRP &o) {
+    this->q = new Vector();
     *(this->q) = *(o.q);
 }
 
@@ -106,5 +107,43 @@ CRP operator-(CRP &lhs, CRP &rhs) {
 CRP operator-(CRP &lhs, RotationParameters &rhs) {
     Matrix dcm = lhs.subtractDCM(rhs);
     return CRP::fromDCM(dcm);
+}
+
+Matrix CRP::B() {
+    return Matrix({
+                          {
+                              1 + pow((*q)[0], 2),
+                              (*q)[0] * (*q)[1] - (*q)[2],
+                              (*q)[0] * (*q)[2] + (*q)[1],
+                          },
+                          {
+                              (*q)[1] * (*q)[0] + (*q)[2],
+                              1 + pow((*q)[1], 2),
+                              (*q)[1] * (*q)[2] - (*q)[0],
+                          },
+                          {
+                              (*q)[2] * (*q)[0] - (*q)[1],
+                              (*q)[2] * (*q)[1] + (*q)[0],
+                              1 + pow((*q)[2], 2),
+                          }
+    });
+}
+
+CRP CRP::integrate(const std::function<Matrix(double)> &w, double duration, double step) {
+    CRP result(*this);
+    for (double i = 0; i <= duration; i += step) {
+        Matrix Wn = result.B();
+        Matrix Xi = w(i);
+        Matrix tmp = Wn * Xi;
+        Matrix Bi = 0.5 * tmp;
+        (*result.q)[0] = (*result.q)[0] + step * Bi(0, 0);
+        (*result.q)[1] = (*result.q)[1]  + step * Bi(1, 0);
+        (*result.q)[2]  = (*result.q)[2]  + step * Bi(2, 0);
+    }
+    return result;
+}
+
+Vector &CRP::getQVector() {
+    return *q;
 }
 

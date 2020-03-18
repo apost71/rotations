@@ -22,8 +22,11 @@ public:
     ~CRP();
     CRP& operator=(const CRP &o);
 
+    Matrix B();
     Matrix toDCM() override;
+    Vector& getQVector();
     static CRP fromDCM(Matrix &dcm);
+    CRP integrate(const std::function<Matrix(double)> &w, double duration, double step);
 
     friend std::ostream& operator<<(std::ostream &os, CRP &e);
     friend bool operator==(const CRP &lhs, const CRP&rhs);
