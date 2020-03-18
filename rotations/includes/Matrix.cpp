@@ -179,22 +179,22 @@ std::ostream& operator<<(std::ostream& os, Matrix &m){
     return os;
 }
 
-Matrix& operator*(Matrix &m1, Matrix &m2) {
+Matrix operator*(Matrix &m1, Matrix &m2) {
     if (m2.m_rows != m1.m_cols) {
         throw std::runtime_error("Matrices dimensions must be compatible");
     }
 
-    auto result = new Matrix(m1.m_rows, m2.m_cols);
+    auto result = Matrix(m1.m_rows, m2.m_cols);
     for (int i = 0; i < m1.m_rows; i ++) {
         for (int j = 0; j < m2.m_cols; j ++) {
             double sum = 0;
             for (int k = 0; k < m1.m_cols; k ++) {
                 sum += m1.m_data[i][k] * m2.m_data[k][j];
             }
-            (*result)(i, j) = sum;
+            result(i, j) = sum;
         }
     }
-    return *result;
+    return result;
 }
 
 double Matrix::trace() {
@@ -208,51 +208,51 @@ double Matrix::trace() {
     return d;
 }
 
-Matrix& operator*(double d, Matrix &m) {
-    auto result = new Matrix(m.m_rows, m.m_cols);
+Matrix operator*(double d, Matrix &m) {
+    auto result = Matrix(m.m_rows, m.m_cols);
     for (int i = 0; i < m.m_rows; i++) {
         for (int j = 0; j < m.m_cols; j++) {
-            (*result)(i, j) = d * m(i, j);
+            result(i, j) = d * m(i, j);
         }
     }
-    return *result;
+    return result;
 }
 
-Matrix& operator/(Matrix &m, double d) {
-    auto result = std::make_unique<Matrix>(m.m_rows, m.m_cols);
+Matrix operator/(Matrix &m, double d) {
+    auto result = Matrix(m.m_rows, m.m_cols);
     for (int i = 0; i < m.m_rows; i ++) {
         for (int j = 0; j < m.m_cols; j ++) {
-            (*result)(i, j) = d / m(i, j);
+            result(i, j) = d / m(i, j);
         }
     }
-    return *result;
+    return result;
 }
 
-std::pair<int, int>& Matrix::max() {
-    auto max = std::make_unique<std::pair<int, int>>(0, 0);
+std::pair<int, int> Matrix::max() {
+    auto max = std::pair<int, int>(0, 0);
     std::cout << *this << std::endl;
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < m_cols; j ++) {
-            if (m_data[i][j] > m_data[max->first][max->second]) {
-                max->first = i;
-                max->second = j;
+            if (m_data[i][j] > m_data[max.first][max.second]) {
+                max.first = i;
+                max.second = j;
             }
         }
     }
-    return *max;
+    return max;
 }
 
-std::pair<int, int>& Matrix::min() {
-    auto min = std::make_unique<std::pair<int, int>>(0, 0);
+std::pair<int, int> Matrix::min() {
+    auto min = std::pair<int, int>(0, 0);
     for (int i = 0; i < m_rows; i ++) {
         for (int j = 0; j < m_cols; j ++) {
-            if (m_data[i][j] < m_data[min->first][min->second]) {
-                min->first = i;
-                min->second = j;
+            if (m_data[i][j] < m_data[min.first][min.second]) {
+                min.first = i;
+                min.second = j;
             }
         }
     }
-    return *min;
+    return min;
 }
 
 bool operator==(const Matrix &m1, const Matrix &m2) {

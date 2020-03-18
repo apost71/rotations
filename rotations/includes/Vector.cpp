@@ -38,6 +38,9 @@ Vector::Vector(const Vector &o) {
 }
 
 Vector& Vector::operator=(const Vector &o) {
+    if(this == &o)
+        return *this;
+
     this->length = o.length;
     this->m_data = new double[o.length];
     for (int i = 0; i < length; i ++) {

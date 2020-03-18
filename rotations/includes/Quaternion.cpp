@@ -33,19 +33,14 @@ Quaternion::~Quaternion() {
 }
 
 Quaternion &Quaternion::operator=(const Quaternion &o) {
+    if(this == &o)
+        return *this;
+
     this->m_b = new Vector(o.m_b->getLength());
     for (int i = 0; i < o.m_b->getLength(); i++) {
         (*this->m_b)[i] = (*o.m_b)[i];
     }
     return *this;
-}
-
-std::unique_ptr<RotationParameters> Quaternion::add(RotationParameters &o) {
-    return RotationParameters::add(o);
-}
-
-std::unique_ptr<RotationParameters> Quaternion::subtract(RotationParameters &o) {
-    return RotationParameters::subtract(o);
 }
 
 Matrix Quaternion::toDCM() {
@@ -71,10 +66,10 @@ Matrix Quaternion::toDCM() {
     return *m_dcm;
 }
 
-std::unique_ptr<RotationParameters> Quaternion::fromDCM(Matrix &dcm) {
+Quaternion Quaternion::fromDCM(Matrix &dcm) {
     auto solver = ShepperdMethod(dcm);
     Vector& b = solver.solve();
-    return std::make_unique<Quaternion>(b);
+    return Quaternion(b);
 }
 
 void Quaternion::printRadians() {
@@ -85,11 +80,11 @@ void Quaternion::printDegrees() {
     return;
 }
 
-Quaternion& Quaternion::fromPRV(PRV &p) {
+Quaternion Quaternion::fromPRV(PRV &p) {
     double b0 = cos(p.getPhi()/2);
     Vector tmp = p.getEv();
     Vector e = sin(p.getPhi()/2) * tmp;
-    return *new Quaternion(b0, e[0], e[1], e[2]);
+    return Quaternion(b0, e[0], e[1], e[2]);
 }
 
 std::ostream& operator<<(std::ostream& os, Quaternion &q) {
@@ -138,6 +133,26 @@ Quaternion Quaternion::integrate(const std::function<Matrix(double)> &w, double 
 Vector& Quaternion::getBVector() {
     return *m_b;
 }
+
+Quaternion operator+(Quaternion &lhs, Quaternion &rhs) {
+    Matrix dcm = lhs.addDCM(rhs);
+    return Quaternion::fromDCM(dcm);}
+
+Quaternion operator-(Quaternion &lhs, Quaternion &rhs) {
+    Matrix dcm = lhs.subtractDCM(rhs);
+    return Quaternion::fromDCM(dcm);
+}
+
+Quaternion operator+(Quaternion &lhs, RotationParameters &rhs) {
+    Matrix dcm = lhs.addDCM(rhs);
+    return Quaternion::fromDCM(dcm);
+}
+
+Quaternion operator-(Quaternion &lhs, RotationParameters &rhs) {
+    Matrix dcm = lhs.subtractDCM(rhs);
+    return Quaternion::fromDCM(dcm);
+}
+
 
 Vector& ShepperdMethod::solve() {
     Vector b_squares = bSquares();

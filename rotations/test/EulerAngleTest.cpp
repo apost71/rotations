@@ -13,16 +13,15 @@ TEST_CASE( "Euler Angles can perform basic operations", "[Euler_Angles]" ) {
 
     SECTION( "Should convert to DCM and back" ) {
         Matrix dcm = e.toDCM();
-        EulerAngle e2 = EulerAngle(3, 2, 1);
-        EulerAngle e3 = *dynamic_cast<EulerAngle*>(e2.fromDCM(dcm).get());
+        EulerAngle e2 = EulerAngle::fromDCM(3, 2, 1, dcm);
 
-        REQUIRE( e == e3 );
+        REQUIRE( e == e2 );
     }
 
     SECTION( "Should add and subtract properly" ) {
         EulerAngle e2 = EulerAngle(3, 2, 1, 20, 10, 5);
-        EulerAngle e3 = *dynamic_cast<EulerAngle*>(e.add(e2).get());
-        EulerAngle e4 = *dynamic_cast<EulerAngle*>(e3.subtract(e2).get());
+        EulerAngle e3 = e + e2;
+        EulerAngle e4 = e3 - e2;
 
         REQUIRE(e == e4);
     }
@@ -33,12 +32,12 @@ TEST_CASE( "PRV should perform basic operations", "[PRV]" ) {
     EulerAngle e = EulerAngle(3, 2, 1, 10, 20, 30);
     PRV p = PRV();
     Matrix m = e.toDCM();
-    p = *dynamic_cast<PRV *>(p.fromDCM(m).get());
+    p = PRV::fromDCM(m);
 
     SECTION("Should convert to DCM and back") {
         PRV r;
         Matrix m2 = p.toDCM();
-        r = *dynamic_cast<PRV *>(r.fromDCM(m2).get());
+        r = PRV::fromDCM(m2);
 
         REQUIRE(p == r);
     }
@@ -47,10 +46,10 @@ TEST_CASE( "PRV should perform basic operations", "[PRV]" ) {
         EulerAngle e2 = EulerAngle(3, 2, 1, 20, 5, 15);
         PRV p2 = PRV();
         Matrix m2 = e.toDCM();
-        p2 = *dynamic_cast<PRV*>(p2.fromDCM(m2).get());
+        p2 = PRV::fromDCM(m2);
 
-        PRV p3 = *dynamic_cast<PRV*>(p.add(p2).get());
-        PRV p4 = *dynamic_cast<PRV*>(p3.subtract(p2).get());
+        PRV p3 = p + p2;
+        PRV p4 = p3 - p2;
 
         REQUIRE(p == p4);
     }
@@ -58,17 +57,13 @@ TEST_CASE( "PRV should perform basic operations", "[PRV]" ) {
 
 TEST_CASE( "Quaternion should perform basic operations", "[quaternion]") {
     EulerAngle e = EulerAngle(3, 2, 1, 10, 20, 30);
-    PRV p = PRV();
     Matrix m = e.toDCM();
-    p = *dynamic_cast<PRV *>(p.fromDCM(m).get());
+    PRV p = PRV::fromDCM(m);
     Quaternion q = Quaternion::fromPRV(p);
 
     SECTION("Should convert to DCM and back") {
-        Quaternion r;
         Matrix dcm = q.toDCM();
-        r = *dynamic_cast<Quaternion*>(r.fromDCM(dcm).get());
-        std::cout << q << std::endl;
-        std::cout << r << std::endl;
+        Quaternion r = Quaternion::fromDCM(dcm);
 
         REQUIRE(r == q);
     }
@@ -77,10 +72,10 @@ TEST_CASE( "Quaternion should perform basic operations", "[quaternion]") {
         EulerAngle e2 = EulerAngle(3, 2, 1, 5, 20, 10);
         PRV p2 = PRV();
         Matrix m2 = e.toDCM();
-        p2 = *dynamic_cast<PRV *>(p2.fromDCM(m2).get());
+        p2 = PRV::fromDCM(m2);
         Quaternion q2 = Quaternion::fromPRV(p2);
-        Quaternion q3 = *dynamic_cast<Quaternion*>(q.add(q2).get());
-        Quaternion q4 = *dynamic_cast<Quaternion*>(q3.subtract(q2).get());
+        Quaternion q3 = q + q2;
+        Quaternion q4 = q3 - q2;
 
         REQUIRE(q == q4);
     }
@@ -100,11 +95,10 @@ TEST_CASE( "Quaternion should perform basic operations", "[quaternion]") {
                     return m;
                 }, 42, 0.001);
 
-        std::cout << q2 << std::endl;
         Vector result({q2.getBVector()[1], q2.getBVector()[2], q2.getBVector()[3]});
         double norm = result.norm();
-        std::cout << norm << std::endl;
 
+        REQUIRE(q2.getBVector().norm() == 1.0);
         REQUIRE(norm == 0.82009620132554206);
     }
 }

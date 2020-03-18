@@ -44,7 +44,7 @@ public:
     
     Matrix toDCM();
 
-    std::unique_ptr<RotationParameters> fromDCM(Matrix &dcm);
+    static EulerAngle fromDCM(int axis1, int axis2, int axis3, Matrix &dcm);
         
     bool isSymmetric();
     
@@ -58,6 +58,10 @@ public:
 
     friend std::ostream& operator<<(std::ostream &os, EulerAngle &e);
     friend bool operator==(const EulerAngle &lhs, const EulerAngle &rhs);
+    friend EulerAngle operator+(EulerAngle &lhs, EulerAngle &rhs);
+    friend EulerAngle operator+(EulerAngle &lhs, RotationParameters &rhs);
+    friend EulerAngle operator-(EulerAngle &lhs, EulerAngle &rhs);
+    friend EulerAngle operator-(EulerAngle &lhs, RotationParameters &rhs);
 };
 
 #endif /* EulerAngle_hpp */

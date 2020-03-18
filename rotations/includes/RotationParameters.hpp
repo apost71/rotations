@@ -34,14 +34,12 @@ public:
 
     std::string getName();
     
-    virtual std::unique_ptr<RotationParameters> add(RotationParameters &o);
-    
-    virtual std::unique_ptr<RotationParameters> subtract(RotationParameters &o);
+//    virtual std::unique_ptr<RotationParameters> add(RotationParameters &o);
+//
+//    virtual std::unique_ptr<RotationParameters> subtract(RotationParameters &o);
     
     virtual Matrix toDCM() = 0;
-    
-    virtual std::unique_ptr<RotationParameters> fromDCM(Matrix &dcm) = 0;
-    
+
     virtual void printRadians() = 0;
     
     virtual void printDegrees() = 0;

@@ -44,24 +44,6 @@ EulerAngle::EulerAngle(const EulerAngle &o) {
 
 EulerAngle::~EulerAngle(){}
 
-std::unique_ptr<RotationParameters> EulerAngle::add(RotationParameters &o) {
-    if (isSymmetric()) {
-        // here we could put the math for adding symmetric Euler Angles
-        return std::make_unique<EulerAngle>(*this);
-    } else {
-        return RotationParameters::add(o);
-    }
-}
-
-std::unique_ptr<RotationParameters> EulerAngle::subtract(RotationParameters &o){
-    if (isSymmetric()) {
-        // subtraction if euler angles are identical and symmetric
-        return std::make_unique<EulerAngle>(*this);
-    } else {
-        return RotationParameters::subtract(o);
-    }
-}
-
 bool EulerAngle::isSymmetric() {
     return false;
 }
@@ -100,17 +82,17 @@ Matrix EulerAngle::toDCM() {
     return *m_dcm;
 }
 
-std::unique_ptr<RotationParameters> EulerAngle::fromDCM(Matrix &dcm){
-    if (m_axis1 == 3 && m_axis2 == 2 && m_axis3 == 1) {
+EulerAngle EulerAngle::fromDCM(int axis1, int axis2, int axis3, Matrix &dcm){
+    if (axis1 == 3 && axis2 == 2 && axis3 == 1) {
         double t1 = atan2(dcm(0, 1), dcm(0, 0));
         double t2 = -asin(dcm(0, 2));
         double t3 = atan2(dcm(1, 2), dcm(2, 2));
-        return std::make_unique<EulerAngle>(m_axis1, m_axis2, m_axis3, radianToDegrees(t1), radianToDegrees(t2), radianToDegrees(t3));
-    } else if (m_axis1 == 3 && m_axis2 == 1 && m_axis3 == 3) {
-        m_t1 = atan2(dcm(2, 0), -dcm(2, 1));
-        m_t2 = acos(dcm(2, 2));
-        m_t3 = atan2(dcm(0, 2), dcm(1, 2));
-        return std::make_unique<EulerAngle>(*this);
+        return EulerAngle(axis1, axis2, axis3, radianToDegrees(t1), radianToDegrees(t2), radianToDegrees(t3));
+    } else if (axis1 == 3 && axis2 == 1 && axis3 == 3) {
+        double t1 = atan2(dcm(2, 0), -dcm(2, 1));
+        double t2 = acos(dcm(2, 2));
+        double t3 = atan2(dcm(0, 2), dcm(1, 2));
+        return EulerAngle(axis1, axis2, axis3, radianToDegrees(t1), radianToDegrees(t2), radianToDegrees(t3));
     } else {
         throw "Unimplemented Exception";
     }
@@ -183,5 +165,24 @@ EulerAngle &EulerAngle::operator=(const EulerAngle &o) {
     this->m_t2 = o.m_t2;
     this->m_t3 = o.m_t3;
     return *this;
+}
+
+EulerAngle operator+(EulerAngle &lhs, EulerAngle &rhs){
+    Matrix dcm = lhs.addDCM(rhs);
+    return EulerAngle::fromDCM(lhs.m_axis1, lhs.m_axis2, lhs.m_axis3, dcm);
+}
+
+EulerAngle operator+(EulerAngle &lhs, RotationParameters &rhs) {
+    Matrix dcm = lhs.addDCM(rhs);
+    return EulerAngle::fromDCM(lhs.m_axis1, lhs.m_axis2, lhs.m_axis3, dcm);}
+
+EulerAngle operator-(EulerAngle &lhs, EulerAngle &rhs) {
+    Matrix dcm = lhs.subtractDCM(rhs);
+    return EulerAngle::fromDCM(lhs.m_axis1, lhs.m_axis2, lhs.m_axis3, dcm);
+}
+
+EulerAngle operator-(EulerAngle &lhs, RotationParameters &rhs) {
+    Matrix dcm = lhs.subtractDCM(rhs);
+    return EulerAngle::fromDCM(lhs.m_axis1, lhs.m_axis2, lhs.m_axis3, dcm);
 }
 

@@ -28,22 +28,22 @@ public:
 
     Quaternion integrate(const std::function<Matrix(double)> &w, double duration, double step);
 
-    std::unique_ptr<RotationParameters> add(RotationParameters &o) override;
-
-    std::unique_ptr<RotationParameters> subtract(RotationParameters &o) override;
-
     Matrix toDCM() override;
 
-    std::unique_ptr<RotationParameters> fromDCM(Matrix &dcm) override;
+    static Quaternion fromDCM(Matrix &dcm);
 
     void printRadians() override;
 
     void printDegrees() override;
 
-    static Quaternion& fromPRV(PRV &p);
+    static Quaternion fromPRV(PRV &p);
 
     friend std::ostream& operator<<(std::ostream& os, Quaternion &q);
     friend bool operator==(const Quaternion &q1, const Quaternion &q2);
+    friend Quaternion operator+(Quaternion &lhs, Quaternion &rhs);
+    friend Quaternion operator-(Quaternion &lhs, Quaternion &rhs);
+    friend Quaternion operator+(Quaternion &lhs, RotationParameters &rhs);
+    friend Quaternion operator-(Quaternion &lhs, RotationParameters &rhs);
 
 };
 

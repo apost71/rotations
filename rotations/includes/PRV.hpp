@@ -23,19 +23,16 @@ public:
     PRV(double phi, const std::initializer_list<double> &list);
     PRV(const PRV &o);
     ~PRV();
+
     PRV& operator=(const PRV &o);
     
-    std::unique_ptr<RotationParameters> add(RotationParameters &o);
+    Matrix toDCM() override;
 
-    std::unique_ptr<RotationParameters> subtract(RotationParameters &o);
-    
-    Matrix toDCM();
+    static PRV fromDCM(Matrix &dcm);
 
-    std::unique_ptr<RotationParameters> fromDCM(Matrix &dcm);
+    void printRadians() override;
     
-    void printRadians();
-    
-    void printDegrees();
+    void printDegrees() override;
 
     double getPhi();
 
@@ -44,7 +41,14 @@ public:
     friend std::ostream& operator<<(std::ostream &os, PRV &prv);
 
     friend bool operator==(const PRV &lhs, const PRV &rhs);
-    
+
+    friend PRV operator+(PRV &lhs, RotationParameters &rhs);
+
+    friend PRV operator+(PRV &lhs, PRV &rhs);
+
+    friend PRV operator-(PRV &lhs, RotationParameters &rhs);
+
+    friend PRV operator-(PRV &lhs, PRV &rhs);
 };
 
 #endif /* PRV_hpp */
