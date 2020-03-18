@@ -26,13 +26,14 @@ Quaternion::Quaternion(Vector &v) {
 
 Quaternion::Quaternion(std::initializer_list<double> &list) {
     this->m_b = new Vector(list);
+    this->m_b->normalize();
 }
 
 Quaternion::~Quaternion() {
     delete this->m_b;
 }
 
-Quaternion &Quaternion::operator=(const Quaternion &o) {
+Quaternion& Quaternion::operator=(const Quaternion &o) {
     if(this == &o)
         return *this;
 
@@ -70,14 +71,6 @@ Quaternion Quaternion::fromDCM(Matrix &dcm) {
     auto solver = ShepperdMethod(dcm);
     Vector& b = solver.solve();
     return Quaternion(b);
-}
-
-void Quaternion::printRadians() {
-    return;
-}
-
-void Quaternion::printDegrees() {
-    return;
 }
 
 Quaternion Quaternion::fromPRV(PRV &p) {

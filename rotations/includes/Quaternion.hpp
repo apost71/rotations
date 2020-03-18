@@ -23,19 +23,10 @@ public:
     Quaternion& operator=(const Quaternion &o);
 
     Matrix B();
-
     Vector& getBVector();
-
     Quaternion integrate(const std::function<Matrix(double)> &w, double duration, double step);
-
     Matrix toDCM() override;
-
     static Quaternion fromDCM(Matrix &dcm);
-
-    void printRadians() override;
-
-    void printDegrees() override;
-
     static Quaternion fromPRV(PRV &p);
 
     friend std::ostream& operator<<(std::ostream& os, Quaternion &q);

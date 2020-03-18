@@ -48,10 +48,6 @@ public:
         
     bool isSymmetric();
     
-    void printDegrees();
-    
-    void printRadians();
-    
     Matrix B(double t1, double t2, double t3);
     
     Matrix integrate(std::function<Matrix&(double)> w, double duration, double step);

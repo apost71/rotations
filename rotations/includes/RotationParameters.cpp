@@ -46,24 +46,6 @@ double radianToDegrees(double r) {
     return r * (180./M_PI);
 }
 
-//std::unique_ptr<RotationParameters> RotationParameters::add(RotationParameters &o) {
-//    if (! m_dcm) {
-//        *m_dcm = toDCM();
-//    }
-//    Matrix other = o.toDCM();
-//    Matrix dcm = other * *m_dcm;
-//    return fromDCM(dcm);
-//}
-//
-//std::unique_ptr<RotationParameters> RotationParameters::subtract(RotationParameters &o) {
-//    if (! m_dcm) {
-//        *m_dcm = toDCM();
-//    }
-//    Matrix other = o.toDCM().transpose();
-//    Matrix dcm = other * *m_dcm;
-//    return fromDCM(dcm);
-//}
-
 std::string RotationParameters::getName() {
     return m_name;
 }

@@ -25,29 +25,16 @@ public:
     ~PRV();
 
     PRV& operator=(const PRV &o);
-    
     Matrix toDCM() override;
-
     static PRV fromDCM(Matrix &dcm);
-
-    void printRadians() override;
-    
-    void printDegrees() override;
-
     double getPhi();
-
     Vector getEv();
 
     friend std::ostream& operator<<(std::ostream &os, PRV &prv);
-
     friend bool operator==(const PRV &lhs, const PRV &rhs);
-
     friend PRV operator+(PRV &lhs, RotationParameters &rhs);
-
     friend PRV operator+(PRV &lhs, PRV &rhs);
-
     friend PRV operator-(PRV &lhs, RotationParameters &rhs);
-
     friend PRV operator-(PRV &lhs, PRV &rhs);
 };
 

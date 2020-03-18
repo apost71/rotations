@@ -18,11 +18,11 @@ set(SOURCES
         "rotations/includes/EulerAngle.cpp"
         "rotations/includes/PRV.cpp"
         "rotations/includes/RotationParameters.cpp"
-        rotations/includes/Quaternion.hpp rotations/includes/Quaternion.cpp rotations/includes/Vector.cpp rotations/includes/Vector.hpp)
+        rotations/includes/Quaternion.hpp rotations/includes/Quaternion.cpp rotations/includes/Vector.cpp rotations/includes/Vector.hpp rotations/includes/CRP.hpp rotations/includes/CRP.cpp rotations/includes/MRP.cpp rotations/includes/MRP.hpp)
 
 add_executable(rotations ${SOURCES} rotations/src/main.cpp)
 
-add_executable(rotations_test ${SOURCES} rotations/test/test.cpp rotations/test/EulerAngleTest.cpp rotations/test/MatrixTest.cpp rotations/test/QuaternionTest.cpp rotations/test/VectorTest.cpp)
+add_executable(rotations_test ${SOURCES} rotations/test/test.cpp rotations/test/RotationParametersTest.cpp rotations/test/MatrixTest.cpp rotations/test/QuaternionTest.cpp rotations/test/VectorTest.cpp)
 target_link_libraries(rotations_test Catch2::Catch2)
 
 include(CTest)

@@ -4,6 +4,7 @@
 
 #include <PRV.hpp>
 #include <Quaternion.hpp>
+#include <CRP.hpp>
 #include "catch2/catch.hpp"
 #include "EulerAngle.hpp"
 
@@ -101,4 +102,30 @@ TEST_CASE( "Quaternion should perform basic operations", "[quaternion]") {
         REQUIRE(q2.getBVector().norm() == 1.0);
         REQUIRE(norm == 0.82009620132554206);
     }
+}
+
+TEST_CASE( "CRP should perform basic operations", "[quaternion]") {
+    EulerAngle e = EulerAngle(3, 2, 1, 10, 20, 30);
+    Matrix m = e.toDCM();
+    PRV p = PRV::fromDCM(m);
+    Quaternion q = Quaternion::fromPRV(p);
+    CRP c = CRP(q);
+
+    SECTION("Should convert to and from dcm") {
+        Matrix dcm = c.toDCM();
+        CRP c2 = CRP::fromDCM(dcm);
+
+        REQUIRE(c == c2);
+    }
+
+    SECTION("Should add and subtract properly") {
+        EulerAngle e2 = EulerAngle(3, 2, 1, 5, 20, 10);
+        Matrix m2 = e.toDCM();
+        CRP c2 = CRP::fromDCM(m2);
+        CRP c3 = c + c2;
+        CRP c4 = c3 - c2;
+
+        REQUIRE(c == c4);
+    }
+
 }

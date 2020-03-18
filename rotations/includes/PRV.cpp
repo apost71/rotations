@@ -93,14 +93,6 @@ PRV PRV::fromDCM(Matrix &dcm) {
     return PRV(radianToDegrees(phi), *Ev);
 }
 
-void PRV::printRadians() {
-    std::cout << "Phi: " << m_phi << "  E_v: [" << (*m_Ev)[0] << ", " << (*m_Ev)[0] << ", " << (*m_Ev)[0] << "]";
-}
-
-void PRV::printDegrees() {
-    std::cout << "Phi: " << radianToDegrees(m_phi) << "  E_v: [" << radianToDegrees((*m_Ev)[0]) << ", " << radianToDegrees((*m_Ev)[1]) << ", " << radianToDegrees((*m_Ev)[2]) << "]";
-}
-
 double PRV::getPhi() {
     return m_phi;
 }

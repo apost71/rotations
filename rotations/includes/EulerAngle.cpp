@@ -117,16 +117,6 @@ Matrix EulerAngle::B(double t1, double t2, double t3) {
     }
 }
 
-void EulerAngle::printRadians() {
-    std::cout << "(" << m_axis1 << ", " << m_axis2 << ", " << m_axis3 << ") ";
-    std::cout << "(" << m_t1 << ", " << m_t2 << ", " << m_t3 << ")" << std::endl;
-}
-
-void EulerAngle::printDegrees() {
-    std::cout << "(" << m_axis1 << ", " << m_axis2 << ", " << m_axis3 << ") ";
-    std::cout << "(" << radianToDegrees(m_t1) << ", " << radianToDegrees(m_t2) << ", " << radianToDegrees(m_t3) << ")" << std::endl;
-}
-
 Matrix EulerAngle::integrate(std::function<Matrix&(double)> w, double duration, double step) {
     Matrix Xn = w(0);
     for (double i = 1; i <= duration; i += 5) {

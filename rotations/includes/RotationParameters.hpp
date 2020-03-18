@@ -39,10 +39,6 @@ public:
 //    virtual std::unique_ptr<RotationParameters> subtract(RotationParameters &o);
     
     virtual Matrix toDCM() = 0;
-
-    virtual void printRadians() = 0;
-    
-    virtual void printDegrees() = 0;
 };
 
 double degreeToRadians(double d);
