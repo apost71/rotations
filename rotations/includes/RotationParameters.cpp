@@ -13,7 +13,7 @@
 
 RotationParameters::RotationParameters(const RotationParameters &o){
     if (o.m_dcm) {
-        *this->m_dcm = *o.m_dcm;
+        this->m_dcm = new Matrix(*(o.m_dcm));
     }
 }
 
@@ -24,14 +24,14 @@ RotationParameters::~RotationParameters() {
 
 Matrix RotationParameters::addDCM(RotationParameters &o) {
     if (! m_dcm) {
-        *(this->m_dcm) = toDCM();
+        this->m_dcm = new Matrix(toDCM());
     }
     return m_dcm->multiply(o.toDCM());
 }
 
 Matrix RotationParameters::subtractDCM(RotationParameters &o) {
     if (! m_dcm) {
-        *(this->m_dcm) = toDCM();
+        this->m_dcm = new Matrix(toDCM());
     }
     auto o_dcm = o.toDCM().transpose();
     return m_dcm->multiply(o.toDCM().transpose());

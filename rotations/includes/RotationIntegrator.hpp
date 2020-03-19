@@ -25,11 +25,7 @@ template<typename T>
 T RotationIntegrator<T>::integrate(const std::function<Matrix(double)> &w, double duration, double step) {
     T result(obj);
     for (double i = 0; i <= duration; i += step) {
-        Matrix Wn = result.B();
-        Matrix Xi = w(i);
-        Matrix tmp = Wn * Xi;
-        Matrix Bi = 0.5 * tmp;
-        result.update(Bi, step);
+        result.update(w(i), step);
     }
     return result;
 }

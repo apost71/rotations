@@ -161,4 +161,30 @@ TEST_CASE( "MRP should perform basic operations", "[mrp]") {
 
         REQUIRE(c == c2);
     }
+
+    SECTION("Should add and subtract properly") {
+        MRP m1({0.1, 0.2, 0.3});
+        MRP m2({-0.1, 0.3, 0.1});
+        MRP c3 = m1 + m2;
+        MRP c4 = c3 - m2;
+
+        REQUIRE(m1 == c4);
+    }
+
+    SECTION("Should integrate using integrator") {
+        MRP initial({0.4, 0.2, -0.1});
+        RotationIntegrator integrator(initial);
+        MRP result = integrator.integrate(
+                [](double t) {
+                    double c = degreeToRadians(20);
+                    Matrix m({
+                                     {c*sin(0.1*t)},
+                                     {c*0.01},
+                                     {c*cos(0.1*t)}
+                             });
+                    return m;
+                }, 42, 0.001);
+        double norm = result.getQVector().norm();
+        REQUIRE(result.getQVector().norm() == 0.63939226719343378);
+    }
 }

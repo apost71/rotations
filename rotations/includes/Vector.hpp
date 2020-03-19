@@ -37,6 +37,7 @@ public:
     friend Vector& operator+(Vector &v1, Vector &v2);
     friend Vector& operator-(Vector &v1, Vector &v2);
     friend Vector& operator/(Vector &v, double d);
+    friend Vector& operator-(Vector &v);
 
 };
 

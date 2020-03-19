@@ -43,7 +43,23 @@ MRP &MRP::operator=(const MRP &o) {
 }
 
 Matrix MRP::B() {
-    return Matrix();
+    return Matrix({
+                          {
+                              1 - pow(q->norm(), 2) + 2 * pow((*q)[0], 2),
+                              2 * ((*q)[0] * (*q)[1] - (*q)[2]),
+                              2 * ((*q)[0] * (*q)[2] + (*q)[1])
+                          },
+                          {
+                              2 * ((*q)[1] * (*q)[0] + (*q)[2]),
+                              1 - pow(q->norm(), 2) + 2 * pow((*q)[1], 2),
+                              2 * ((*q)[1] * (*q)[2] - (*q)[0])
+                          },
+                          {
+                              2 * ((*q)[2] * (*q)[0] - (*q)[1]),
+                              2 * ((*q)[2] * (*q)[1] + (*q)[0]),
+                              1 - pow(q->norm(), 2) + 2 * pow((*q)[2], 2)
+                          }
+    });
 }
 
 Matrix MRP::toDCM() {
@@ -72,8 +88,17 @@ CRP MRP::toCRP() {
     return CRP((2 * *q) / (1 + q->dot(*q)));
 }
 
-void MRP::update(Matrix Bi, double step) {
-
+void MRP::update(Matrix Xi, double step) {
+    Matrix Wn = B();
+    Matrix tmp = Wn * Xi;
+    Matrix Bi = 0.25 * tmp;
+    (*q)[0] = (*q)[0] + step * Bi(0, 0);
+    (*q)[1] = (*q)[1] + step * Bi(1, 0);
+    (*q)[2] = (*q)[2] + step * Bi(2, 0);
+    if (q->norm() >= 1) {
+        Vector v = -*q / pow(q->norm(), 2);
+        this->q = new Vector(v);
+    }
 }
 
 MRP MRP::fromDCM(Matrix &dcm) {
@@ -101,20 +126,32 @@ bool operator==(const MRP &lhs, const MRP &rhs) {
     return *(lhs.q) == *(rhs.q);
 }
 
-MRP operator+(MRP &lhs, MRP &rhs) {
-    return MRP();
+MRP operator+(MRP &rhs, MRP &lhs) {
+    double lhs2 = pow(lhs.q->norm(), 2);
+    double rhs2 = pow(rhs.q->norm(), 2);
+    Vector cross = (*rhs.q).cross(*(lhs.q));
+    Vector num = (1 - lhs2) * *(rhs.q) + (1 - rhs2) * *(lhs.q) - 2 * cross;
+    double den = 1 + lhs2 * rhs2 - (2 * *(lhs.q)).dot(*(rhs.q));
+    return num / den;
 }
 
 MRP operator+(MRP &lhs, RotationParameters &rhs) {
-    return MRP();
+    Matrix dcm = lhs.addDCM(rhs);
+    return MRP::fromDCM(dcm);
 }
 
-MRP operator-(MRP &lhs, MRP &rhs) {
-    return MRP();
+MRP operator-(MRP &rhs, MRP &lhs) {
+    double lhs2 = pow(lhs.q->norm(), 2);
+    double rhs2 = pow(rhs.q->norm(), 2);
+    Vector cross = (*rhs.q).cross(*(lhs.q));
+    Vector num = (1 - lhs2) * *(rhs.q) - (1 - rhs2) * *(lhs.q) + 2 * cross;
+    double den = 1 + lhs2 * rhs2 + (2 * *(lhs.q)).dot(*(rhs.q));
+    return num / den;
 }
 
 MRP operator-(MRP &lhs, RotationParameters &rhs) {
-    return MRP();
+    Matrix dcm = lhs.subtractDCM(rhs);
+    return MRP::fromDCM(dcm);
 }
 
 

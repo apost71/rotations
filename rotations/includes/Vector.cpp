@@ -183,3 +183,10 @@ Vector &operator/(Vector &v, double d) {
     return v;
 }
 
+Vector &operator-(Vector &v) {
+    for (int i = 0 ; i < v.getLength(); i ++) {
+        v[i] = -v[i];
+    }
+    return v;
+}
+

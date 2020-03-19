@@ -49,6 +49,7 @@ public:
     friend std::ostream& operator<<(std::ostream& os, Matrix &m);
     friend bool operator==(const Matrix &m1, const Matrix &m2);
     friend Matrix operator+(Matrix &m1, Matrix &m2);
+    friend Matrix operator+(Matrix &m, double d);
     friend Matrix operator-(Matrix &m1, Matrix &m2);
     Matrix& operator=(const Matrix &o);
 };

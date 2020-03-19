@@ -352,3 +352,13 @@ Vector Matrix::fromTilde() {
     });
 }
 
+Matrix operator+(Matrix &m, double d) {
+    Matrix result(m.m_rows, m.m_cols);
+    for (int i = 0; i < m.m_rows; i ++) {
+        for (int j = 0; j < m.m_cols; j ++) {
+            result(i, j) = m(i, j) + d;
+        }
+    }
+    return result;
+}
+

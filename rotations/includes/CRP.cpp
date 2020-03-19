@@ -133,7 +133,10 @@ Matrix CRP::B() {
     });
 }
 
-void CRP::update(Matrix Bi, double step) {
+void CRP::update(Matrix Xi, double step) {
+    Matrix Wn = B();
+    Matrix tmp = Wn * Xi;
+    Matrix Bi = 0.5 * tmp;
     (*q)[0] = (*q)[0] + step * Bi(0, 0);
     (*q)[1] = (*q)[1]  + step * Bi(1, 0);
     (*q)[2]  = (*q)[2]  + step * Bi(2, 0);
