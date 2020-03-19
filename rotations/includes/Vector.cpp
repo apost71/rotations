@@ -166,3 +166,20 @@ double Vector::maxValue() {
     return maxValue;
 }
 
+Vector Vector::power(int pow) {
+    Vector v(*this);
+    for (int i = 0; i < pow; i ++) {
+        for (int j = 0; j < v.length; j ++) {
+            v[j] = v[j] * m_data[j];
+        }
+    }
+    return v;
+}
+
+Vector &operator/(Vector &v, double d) {
+    for (int i = 0; i < v.length; i ++) {
+        v[i] = v[i] / d;
+    }
+    return v;
+}
+

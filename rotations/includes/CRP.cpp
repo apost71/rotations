@@ -6,14 +6,12 @@
 #include <cmath>
 
 CRP::CRP(Vector &v) {
-   this->q = new Vector();
-   *(this->q) = v;
+   this->q = new Vector(v);
 }
 
 CRP::CRP(PRV &p) {
     Vector v = p.getEv();
-    this->q = new Vector();
-    *(this->q) = (p.getPhi() / 2) * v;
+    this->q = new Vector((tan(p.getPhi() / 2)) * v);
 }
 
 CRP::CRP(Quaternion &q) {
@@ -41,7 +39,7 @@ CRP::~CRP() {
 CRP& CRP::operator=(const CRP &o) {
     if(this == &o)
         return *this;
-    *(this->q) = *(o.q);
+    this->q = new Vector(*(o.q));
     return *this;
 }
 

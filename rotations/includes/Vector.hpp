@@ -26,6 +26,7 @@ public:
     double norm();
     void normalize();
     double dot(Vector &v);
+    Vector power(int pow);
     Vector cross(Vector &v);
     int maxIndex();
     double maxValue();
@@ -35,7 +36,7 @@ public:
     friend Vector& operator*(double d, Vector &v);
     friend Vector& operator+(Vector &v1, Vector &v2);
     friend Vector& operator-(Vector &v1, Vector &v2);
-
+    friend Vector& operator/(Vector &v, double d);
 
 };
 

@@ -14,6 +14,7 @@ include_directories(rotations/includes)
 find_package(Catch2 REQUIRED)
 
 set(SOURCES
+        rotations/includes/Matrix.hpp
         "rotations/includes/Matrix.cpp"
         "rotations/includes/EulerAngle.cpp"
         "rotations/includes/PRV.cpp"

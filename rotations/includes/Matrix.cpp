@@ -222,7 +222,7 @@ Matrix operator/(Matrix &m, double d) {
     auto result = Matrix(m.m_rows, m.m_cols);
     for (int i = 0; i < m.m_rows; i ++) {
         for (int j = 0; j < m.m_cols; j ++) {
-            result(i, j) = d / m(i, j);
+            result(i, j) = m(i, j) / d;
         }
     }
     return result;
@@ -285,3 +285,70 @@ Matrix& Matrix::operator=(const Matrix &o) {
     }
     return *this;
 }
+
+Matrix Matrix::identity(int rows, int columns) {
+    assert(rows == columns);
+
+    Matrix result(rows, columns);
+    for (int i = 0; i < rows; i ++) {
+        for (int j = 0; j < columns; j ++) {
+            if (i == j) {
+                result(i, j) = 1;
+            } else {
+                result(i, j) = 0;
+            }
+        }
+    }
+    return result;
+}
+
+Matrix operator+(Matrix &m1, Matrix &m2) {
+    assert(m1.m_rows == m2.m_rows);
+    assert(m1.m_cols == m2.m_cols);
+    Matrix result(m1.m_rows, m1.m_cols);
+    for (int i = 0; i < m1.m_rows; i++) {
+        for (int j = 0; j < m1.m_cols; j ++) {
+            result(i, j) = m1(i, j) + m2(i, j);
+        }
+    }
+    return result;
+}
+
+Matrix operator-(Matrix &m1, Matrix &m2) {
+    assert(m1.m_rows == m2.m_rows);
+    assert(m1.m_cols == m2.m_cols);
+    Matrix result(m1.m_rows, m1.m_cols);
+    for (int i = 0; i < m1.m_rows; i++) {
+        for (int j = 0; j < m1.m_cols; j ++) {
+            result(i, j) = m1(i, j) - m2(i, j);
+        }
+    }
+    return result;
+}
+
+Matrix Matrix::tilde(Vector &v) {
+    assert(v.getLength() == 3);
+
+    return Matrix({
+                          {
+                                  0, -v[2], v[1]
+                          },
+                          {
+                                  v[2], 0, -v[0]
+                          },
+                          {
+                                  -v[1], v[0], 0
+                          }
+                  });
+}
+
+Vector Matrix::fromTilde() {
+    assert(this->m_rows == 3 && this->m_cols == 3);
+
+    return Vector({
+        (*this)(2, 1),
+        (*this)(0, 2),
+        (*this)(1, 0)
+    });
+}
+

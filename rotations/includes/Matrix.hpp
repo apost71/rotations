@@ -37,14 +37,19 @@ public:
     double &operator()(int row, int col);
     double det();
     double trace();
+    static Matrix tilde(Vector &v);
+    Vector fromTilde();
     std::pair<int, int> max();
     std::pair<int, int> min();
     static double getDeterminant(Matrix &m);
+    static Matrix identity(int rows, int columns);
     friend Matrix operator*(Matrix &m1, Matrix &m2);
     friend Matrix operator*(double d, Matrix &m);
     friend Matrix operator/(Matrix &m, double d);
     friend std::ostream& operator<<(std::ostream& os, Matrix &m);
     friend bool operator==(const Matrix &m1, const Matrix &m2);
+    friend Matrix operator+(Matrix &m1, Matrix &m2);
+    friend Matrix operator-(Matrix &m1, Matrix &m2);
     Matrix& operator=(const Matrix &o);
 };
 #endif /* Matrix_hpp */

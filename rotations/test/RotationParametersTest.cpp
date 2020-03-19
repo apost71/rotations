@@ -6,6 +6,7 @@
 #include <Quaternion.hpp>
 #include <CRP.hpp>
 #include <RotationIntegrator.hpp>
+#include <MRP.hpp>
 #include "catch2/catch.hpp"
 #include "EulerAngle.hpp"
 
@@ -105,7 +106,7 @@ TEST_CASE( "Quaternion should perform basic operations", "[quaternion]") {
     }
 }
 
-TEST_CASE( "CRP should perform basic operations", "[quaternion]") {
+TEST_CASE( "CRP should perform basic operations", "[crp]") {
     EulerAngle e = EulerAngle(3, 2, 1, 10, 20, 30);
     Matrix m = e.toDCM();
     PRV p = PRV::fromDCM(m);
@@ -142,6 +143,22 @@ TEST_CASE( "CRP should perform basic operations", "[quaternion]") {
                              });
                     return m;
                 }, 42, 0.001);
+        
         REQUIRE(result.getQVector().norm() == 1.1996198204022048);
+    }
+}
+
+TEST_CASE( "MRP should perform basic operations", "[mrp]") {
+    EulerAngle e = EulerAngle(3, 2, 1, 10, 20, 30);
+    Matrix m = e.toDCM();
+    PRV p = PRV::fromDCM(m);
+    MRP c = MRP(p);
+
+    SECTION("Should convert to and from dcm") {
+        c = MRP({0.1, 0.2, 0.3});
+        Matrix dcm = c.toDCM();
+        MRP c2 = MRP::fromDCM(dcm);
+
+        REQUIRE(c == c2);
     }
 }
