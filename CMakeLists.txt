@@ -18,7 +18,15 @@ set(SOURCES
         "rotations/includes/EulerAngle.cpp"
         "rotations/includes/PRV.cpp"
         "rotations/includes/RotationParameters.cpp"
-        rotations/includes/Quaternion.hpp rotations/includes/Quaternion.cpp rotations/includes/Vector.cpp rotations/includes/Vector.hpp rotations/includes/CRP.hpp rotations/includes/CRP.cpp rotations/includes/MRP.cpp rotations/includes/MRP.hpp)
+        rotations/includes/Quaternion.hpp
+        rotations/includes/Quaternion.cpp
+        rotations/includes/Vector.cpp
+        rotations/includes/Vector.hpp
+        rotations/includes/CRP.hpp
+        rotations/includes/CRP.cpp
+        rotations/includes/MRP.cpp
+        rotations/includes/MRP.hpp
+        "rotations/includes/RotationIntegrator.hpp")
 
 add_executable(rotations ${SOURCES} rotations/src/main.cpp)
 

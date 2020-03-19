@@ -5,6 +5,7 @@
 #include <PRV.hpp>
 #include <Quaternion.hpp>
 #include <CRP.hpp>
+#include <RotationIntegrator.hpp>
 #include "catch2/catch.hpp"
 #include "EulerAngle.hpp"
 
@@ -81,18 +82,18 @@ TEST_CASE( "Quaternion should perform basic operations", "[quaternion]") {
         REQUIRE(q == q4);
     }
 
-    SECTION("Should integrate properly") {
+    SECTION("Should integrate with integrator") {
         Quaternion q1(0.408248, 0., 0.408248, 0.816497);
-
-        Quaternion q2 = q1.integrate(
+        RotationIntegrator integrator(q1);
+        Quaternion q2 = integrator.integrate(
                 [](double t) {
                     double c = degreeToRadians(20);
                     Matrix m({
-                       {0.},
-                       {c*sin(0.1*t)},
-                       {c*0.01},
-                       {c*cos(0.1*t)}
-                    });
+                                     {0.},
+                                     {c*sin(0.1*t)},
+                                     {c*0.01},
+                                     {c*cos(0.1*t)}
+                             });
                     return m;
                 }, 42, 0.001);
 
@@ -128,9 +129,10 @@ TEST_CASE( "CRP should perform basic operations", "[quaternion]") {
         REQUIRE(c == c4);
     }
 
-    SECTION("Should integrate properly") {
+    SECTION("Should integrate with integrator") {
         CRP initial({0.4, 0.2, -0.1});
-        CRP result = initial.integrate(
+        RotationIntegrator integrator(initial);
+        CRP result = integrator.integrate(
                 [](double t) {
                     double c = degreeToRadians(3);
                     Matrix m({
@@ -142,5 +144,4 @@ TEST_CASE( "CRP should perform basic operations", "[quaternion]") {
                 }, 42, 0.001);
         REQUIRE(result.getQVector().norm() == 1.1996198204022048);
     }
-
 }

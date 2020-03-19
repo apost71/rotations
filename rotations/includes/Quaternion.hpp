@@ -24,7 +24,7 @@ public:
 
     Matrix B();
     Vector& getBVector();
-    Quaternion integrate(const std::function<Matrix(double)> &w, double duration, double step);
+    void update(Matrix Bi, double step);
     Matrix toDCM() override;
     static Quaternion fromDCM(Matrix &dcm);
     static Quaternion fromPRV(PRV &p);

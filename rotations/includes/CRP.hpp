@@ -17,6 +17,7 @@ public:
     CRP() = default;
     CRP(Vector &v);
     CRP(Quaternion &q);
+    CRP(PRV &p);
     CRP(const std::initializer_list<double> &list);
     CRP(const CRP &o);
     ~CRP();
@@ -25,8 +26,8 @@ public:
     Matrix B();
     Matrix toDCM() override;
     Vector& getQVector();
+    void update(Matrix Bi, double step);
     static CRP fromDCM(Matrix &dcm);
-    CRP integrate(const std::function<Matrix(double)> &w, double duration, double step);
 
     friend std::ostream& operator<<(std::ostream &os, CRP &e);
     friend bool operator==(const CRP &lhs, const CRP&rhs);

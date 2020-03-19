@@ -10,6 +10,12 @@ CRP::CRP(Vector &v) {
    *(this->q) = v;
 }
 
+CRP::CRP(PRV &p) {
+    Vector v = p.getEv();
+    this->q = new Vector();
+    *(this->q) = (p.getPhi() / 2) * v;
+}
+
 CRP::CRP(Quaternion &q) {
     Vector v = q.getBVector();
     this->q = new Vector({
@@ -129,18 +135,10 @@ Matrix CRP::B() {
     });
 }
 
-CRP CRP::integrate(const std::function<Matrix(double)> &w, double duration, double step) {
-    CRP result(*this);
-    for (double i = 0; i <= duration; i += step) {
-        Matrix Wn = result.B();
-        Matrix Xi = w(i);
-        Matrix tmp = Wn * Xi;
-        Matrix Bi = 0.5 * tmp;
-        (*result.q)[0] = (*result.q)[0] + step * Bi(0, 0);
-        (*result.q)[1] = (*result.q)[1]  + step * Bi(1, 0);
-        (*result.q)[2]  = (*result.q)[2]  + step * Bi(2, 0);
-    }
-    return result;
+void CRP::update(Matrix Bi, double step) {
+    (*q)[0] = (*q)[0] + step * Bi(0, 0);
+    (*q)[1] = (*q)[1]  + step * Bi(1, 0);
+    (*q)[2]  = (*q)[2]  + step * Bi(2, 0);
 }
 
 Vector &CRP::getQVector() {
