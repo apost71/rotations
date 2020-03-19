@@ -129,7 +129,10 @@ Quaternion operator-(Quaternion &lhs, RotationParameters &rhs) {
     return Quaternion::fromDCM(dcm);
 }
 
-void Quaternion::update(Matrix Bi, double step) {
+void Quaternion::update(Matrix Xi, double step) {
+    Matrix Wn = B();
+    Matrix tmp = Wn * Xi;
+    Matrix Bi = 0.5 * tmp;
     (*m_b)[0] = (*m_b)[0] + step * Bi(0, 0);
     (*m_b)[1] = (*m_b)[1] + step * Bi(1, 0);
     (*m_b)[2] = (*m_b)[2] + step * Bi(2, 0);
