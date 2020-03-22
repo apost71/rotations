@@ -10,7 +10,7 @@
 #define RotationParameters_hpp
 
 #include <stdio.h>
-#include "Matrix.hpp"
+#include "math/Matrix.hpp"
 #include <math.h>
 #include <string>
 

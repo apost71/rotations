@@ -7,7 +7,7 @@
 //
 
 #include <iostream>
-#include "Matrix.hpp"
+#include "math/Matrix.hpp"
 #include "EulerAngle.hpp"
 
 

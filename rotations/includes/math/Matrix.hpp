@@ -18,6 +18,7 @@ private:
     Vector* m_data;
     int m_cols = 0;
     int m_rows = 0;
+    bool isTranspose = false;
     
 public:
     Matrix();
@@ -41,6 +42,7 @@ public:
     Vector fromTilde();
     std::pair<int, int> max();
     std::pair<int, int> min();
+    static Matrix outerProduct(Vector &v1, Vector &v2);
     static double getDeterminant(Matrix &m);
     static Matrix identity(int rows, int columns);
     friend Matrix operator*(Matrix &m1, Matrix &m2);

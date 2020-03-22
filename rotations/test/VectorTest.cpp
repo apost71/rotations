@@ -2,7 +2,7 @@
 // Created by Alex Post on 2/25/20.
 //
 
-#include <Vector.hpp>
+#include <math/Vector.hpp>
 #include "catch2/catch.hpp"
 #include <iostream>
 TEST_CASE("Should initialize correctly", "[vector]") {

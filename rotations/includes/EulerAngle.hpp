@@ -11,7 +11,7 @@
 
 #include <stdio.h>
 #include "RotationParameters.hpp"
-#include "Matrix.hpp"
+#include "math/Matrix.hpp"
 #include <iostream>
 
 class EulerAngle: public RotationParameters {

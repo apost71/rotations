@@ -13,23 +13,27 @@ include_directories(rotations/includes)
 
 find_package(Catch2 REQUIRED)
 
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
+
 set(SOURCES
-        rotations/includes/Matrix.hpp
-        "rotations/includes/Matrix.cpp"
+        rotations/includes/math/Matrix.hpp
+        "rotations/includes/math/Matrix.cpp"
         "rotations/includes/EulerAngle.cpp"
         "rotations/includes/PRV.cpp"
         "rotations/includes/RotationParameters.cpp"
         rotations/includes/Quaternion.hpp
         rotations/includes/Quaternion.cpp
-        rotations/includes/Vector.cpp
-        rotations/includes/Vector.hpp
+        rotations/includes/math/Vector.cpp
+        rotations/includes/math/Vector.hpp
         rotations/includes/CRP.hpp
         rotations/includes/CRP.cpp
         rotations/includes/MRP.cpp
         rotations/includes/MRP.hpp
-        "rotations/includes/RotationIntegrator.hpp")
+        "rotations/includes/RotationIntegrator.hpp" rotations/includes/AttitudeDetermination/TriadMethod.cpp rotations/includes/AttitudeDetermination/TriadMethod.hpp rotations/test/AttitudeDeterminationTest.cpp rotations/includes/AttitudeDetermination/DavenportQ.cpp rotations/includes/AttitudeDetermination/DavenportQ.hpp rotations/includes/AttitudeDetermination/AttitudeDetermination.cpp rotations/includes/AttitudeDetermination/AttitudeDetermination.hpp)
 
 add_executable(rotations ${SOURCES} rotations/src/main.cpp)
+target_link_libraries (rotations Eigen3::Eigen)
+
 
 add_executable(rotations_test ${SOURCES} rotations/test/test.cpp rotations/test/RotationParametersTest.cpp rotations/test/MatrixTest.cpp rotations/test/QuaternionTest.cpp rotations/test/VectorTest.cpp)
 target_link_libraries(rotations_test Catch2::Catch2)

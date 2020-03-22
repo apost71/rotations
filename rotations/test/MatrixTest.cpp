@@ -3,7 +3,7 @@
 //
 
 #include "catch2/catch.hpp"
-#include "Matrix.hpp"
+#include "math/Matrix.hpp"
 
 TEST_CASE("Should perform basic matrix operations", "[matrix]") {
     Matrix m = Matrix(3, 3);

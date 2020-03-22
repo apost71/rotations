@@ -10,7 +10,7 @@
 #define PRV_hpp
 
 #include <stdio.h>
-#include "Matrix.hpp"
+#include "math/Matrix.hpp"
 #include "RotationParameters.hpp"
 
 class PRV: public RotationParameters {

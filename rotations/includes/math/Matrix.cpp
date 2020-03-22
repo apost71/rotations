@@ -27,6 +27,7 @@ Matrix::Matrix(const Matrix &o) {
     this->m_rows = o.getRows();
     this->m_cols = o.getColumns();
     this->m_data = new Vector[o.m_rows];
+    this->isTranspose = o.isTranspose;
     for (int i = 0; i < m_rows; i ++) {
         this->m_data[i] = Vector(m_cols);
         for (int j = 0; j < m_cols; j ++) {
@@ -92,15 +93,26 @@ Matrix Matrix::multiply(const Matrix &o) {
 }
 
 Matrix Matrix::transpose() {
-    for (int i = 0; i < m_rows; i ++ ) {
-        for (int j = i + 1; j < m_cols; j ++) {
-            // potential for a memory leak here I think
-            double cur = m_data[i][j];
-            this->m_data[i][j] = this->m_data[j][i];
-            m_data[j][i] = cur;
+    if (m_cols == m_rows) {
+        for (int i = 0; i < m_rows; i++) {
+            for (int j = i + 1; j < m_cols; j++) {
+                // potential for a memory leak here I think
+                double cur = m_data[i][j];
+                this->m_data[i][j] = this->m_data[j][i];
+                m_data[j][i] = cur;
+            }
         }
+        return *this;
+    } else {
+        Matrix result(m_cols, m_rows);
+        for (int i = 0; i < m_rows; i ++) {
+            for (int j = 0; j < m_cols; j ++) {
+                result.m_data[j][i] = this->m_data[i][j];
+            }
+        }
+        *this = result;
+        return *this;
     }
-    return *this;
 }
 
 void Matrix::insert(int row, int column, double value) {
@@ -357,6 +369,16 @@ Matrix operator+(Matrix &m, double d) {
     for (int i = 0; i < m.m_rows; i ++) {
         for (int j = 0; j < m.m_cols; j ++) {
             result(i, j) = m(i, j) + d;
+        }
+    }
+    return result;
+}
+
+Matrix Matrix::outerProduct(Vector &v1, Vector &v2) {
+    Matrix result(v1.getLength(), v2.getLength());
+    for (int i = 0; i < v1.getLength(); i ++) {
+        for (int j = 0; j < v2.getLength(); j ++) {
+            result(i, j) = v1[i] * v2[j];
         }
     }
     return result;

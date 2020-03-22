@@ -1,0 +1,14 @@
+//
+// Created by Alex Post on 3/22/20.
+//
+
+#ifndef ROTATIONS_ATTITUDEDETERMINATION_HPP
+#define ROTATIONS_ATTITUDEDETERMINATION_HPP
+
+
+class AttitudeDetermination {
+
+};
+
+
+#endif //ROTATIONS_ATTITUDEDETERMINATION_HPP

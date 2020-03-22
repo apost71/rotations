@@ -7,7 +7,7 @@
 //
 
 #include "PRV.hpp"
-#include "Matrix.hpp"
+#include "math/Matrix.hpp"
 #include "RotationParameters.hpp"
 #include <cmath>
 #include <iostream>
@@ -37,10 +37,7 @@ PRV::PRV(double phi, const std::initializer_list<double> &list) {
 
 PRV::PRV(const PRV &o) {
     this->m_phi = o.m_phi;
-    this->m_Ev = new Vector(o.m_Ev->getLength());
-    for (int i = 0; i < o.m_Ev->getLength(); i ++) {
-        (*this->m_Ev)[i] = (*o.m_Ev)[i];
-    }
+    this->m_Ev = new Vector(*(o.m_Ev));
     this->m_Ev->normalize();
     this->m_name = "PRV";
 }
@@ -51,10 +48,7 @@ PRV& PRV::operator=(const PRV &o) {
     if (this == &o)
         return *this;
     this->m_phi = o.m_phi;
-    this->m_Ev = new Vector(o.m_Ev->getLength());
-    for (int i = 0; i < o.m_Ev->getLength(); i ++) {
-        (*this->m_Ev)[i] = (*o.m_Ev)[i];
-    }
+    this->m_Ev = new Vector(*(o.m_Ev));
     this->m_Ev->normalize();
     this->m_name = "PRV";
     return *this;

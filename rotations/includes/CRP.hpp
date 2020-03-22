@@ -5,8 +5,8 @@
 #ifndef ROTATIONS_CRP_HPP
 #define ROTATIONS_CRP_HPP
 
-#include "Vector.hpp"
-#include "Matrix.hpp"
+#include "math/Vector.hpp"
+#include "math/Matrix.hpp"
 #include "RotationParameters.hpp"
 #include "Quaternion.hpp"
 

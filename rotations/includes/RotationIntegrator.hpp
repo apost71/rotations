@@ -5,7 +5,7 @@
 #ifndef ROTATIONS_ROTATIONINTEGRATOR_HPP
 #define ROTATIONS_ROTATIONINTEGRATOR_HPP
 
-#include "Matrix.hpp"
+#include "math/Matrix.hpp"
 
 template <typename T>
 class RotationIntegrator {

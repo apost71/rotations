@@ -8,7 +8,7 @@
 
 #include <iostream>
 #include "RotationParameters.hpp"
-#include "Matrix.hpp"
+#include "math/Matrix.hpp"
 
 
 RotationParameters::RotationParameters(const RotationParameters &o){
